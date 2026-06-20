@@ -21,6 +21,8 @@ import Rooms from '@/pages/Rooms';
 import AdminPanel from '@/pages/AdminPanel';
 import Archive from '@/pages/Archive';
 import Writers from '@/pages/Writers';
+import Boards from '@/pages/Boards';
+import BoardView from '@/pages/BoardView';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -59,6 +61,8 @@ const AuthenticatedApp = () => {
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/archive" element={<Archive />} />
           <Route path="/writers" element={<Writers />} />
+          <Route path="/boards" element={<Boards />} />
+          <Route path="/boards/:id" element={<BoardView />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
