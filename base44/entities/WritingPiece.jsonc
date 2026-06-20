@@ -38,6 +38,14 @@
     "last_tended": {
       "type": "string",
       "format": "date-time"
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false
+    },
+    "archived_date": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "required": [

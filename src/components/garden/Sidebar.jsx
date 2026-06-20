@@ -11,6 +11,7 @@ const navItems = [
   { label: "WRITERS", path: "/writers" },
   { label: "FEED", path: "/feed" },
   { label: "WORKSHOP ROOMS", path: "/rooms" },
+  { label: "THE ARCHIVE", path: "/archive" },
   { label: "ADMIN PANEL", path: "/admin" },
 ];
 

@@ -45,7 +45,7 @@ export default function Projects() {
 
   const { data: pieces = [] } = useQuery({
     queryKey: ["pieces"],
-    queryFn: () => base44.entities.WritingPiece.list("-updated_date"),
+    queryFn: () => base44.entities.WritingPiece.filter({ archived: false }, "-updated_date"),
   });
 
   let filtered = pieces;

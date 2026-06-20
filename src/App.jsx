@@ -19,6 +19,7 @@ import StudioWall from '@/pages/StudioWall';
 import Feed from '@/pages/Feed';
 import Rooms from '@/pages/Rooms';
 import AdminPanel from '@/pages/AdminPanel';
+import Archive from '@/pages/Archive';
 import Writers from '@/pages/Writers';
 
 const AuthenticatedApp = () => {
@@ -56,6 +57,7 @@ const AuthenticatedApp = () => {
           <Route path="/feed" element={<Feed />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/archive" element={<Archive />} />
           <Route path="/writers" element={<Writers />} />
         </Route>
       </Route>
