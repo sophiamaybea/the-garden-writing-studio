@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { STAGE_META, getFormLabel } from "@/lib/gardenUtils";
 import StageMark from "@/components/garden/StageMark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Maximize2, Minimize2 } from "lucide-react";
 
 export default function WriteEditor() {
   const { id } = useParams();
@@ -19,6 +20,19 @@ export default function WriteEditor() {
   const [excerpt, setExcerpt] = useState("");
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [focusMode, setFocusMode] = useState(false);
+
+  useEffect(() => {
+    const sidebar = document.querySelector("aside");
+    if (sidebar) sidebar.style.display = focusMode ? "none" : "";
+    return () => { if (sidebar) sidebar.style.display = ""; };
+  }, [focusMode]);
+
+  useEffect(() => {
+    const handleKey = (e) => { if (e.key === "Escape" && focusMode) setFocusMode(false); };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [focusMode]);
 
   const { data: piece } = useQuery({
     queryKey: ["piece", id],
@@ -65,7 +79,7 @@ export default function WriteEditor() {
   const meta = STAGE_META[stage];
 
   return (
-    <div className="max-w-[860px] mx-auto" style={{ padding: "52px 52px 72px" }}>
+    <div className="max-w-[860px] mx-auto" style={{ padding: focusMode ? "52px 52px 72px" : "52px 52px 72px", transition: "all .3s" }}>
       {/* Top bar */}
       <div className="flex justify-between items-center mb-8">
         <button
@@ -75,18 +89,34 @@ export default function WriteEditor() {
         >
           ← BACK TO GARDEN
         </button>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="flex items-center gap-2 border-none cursor-pointer rounded-lg hover:bg-[#193020] transition-colors disabled:opacity-50"
-          style={{
-            background: "#23402b", color: "#f3ecd8",
-            fontFamily: "'IBM Plex Mono', monospace", fontSize: "11.5px", fontWeight: 500,
-            letterSpacing: "1.5px", textTransform: "uppercase", padding: "12px 18px",
-          }}
-        >
-          {saving ? "SAVING..." : "SAVE & TEND"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setFocusMode((f) => !f)}
+            title={focusMode ? "Exit focus mode (Esc)" : "Enter focus mode"}
+            className="flex items-center gap-2 border-none cursor-pointer rounded-lg transition-colors hover:bg-black/10"
+            style={{
+              background: "transparent", color: "#5d7a4f",
+              fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px",
+              letterSpacing: "1.5px", textTransform: "uppercase", padding: "12px 14px",
+              border: "1px solid rgba(40,40,31,.18)",
+            }}
+          >
+            {focusMode ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+            {focusMode ? "EXIT FOCUS" : "FOCUS"}
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="flex items-center gap-2 border-none cursor-pointer rounded-lg hover:bg-[#193020] transition-colors disabled:opacity-50"
+            style={{
+              background: "#23402b", color: "#f3ecd8",
+              fontFamily: "'IBM Plex Mono', monospace", fontSize: "11.5px", fontWeight: 500,
+              letterSpacing: "1.5px", textTransform: "uppercase", padding: "12px 18px",
+            }}
+          >
+            {saving ? "SAVING..." : "SAVE & TEND"}
+          </button>
+        </div>
       </div>
 
       {/* Metadata */}
