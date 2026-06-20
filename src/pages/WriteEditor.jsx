@@ -6,6 +6,7 @@ import { STAGE_META, getFormLabel } from "@/lib/gardenUtils";
 import StageMark from "@/components/garden/StageMark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Maximize2, Minimize2 } from "lucide-react";
+import MarginAnnotations from "@/components/garden/MarginAnnotations";
 
 export default function WriteEditor() {
   const { id } = useParams();
@@ -21,6 +22,12 @@ export default function WriteEditor() {
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+  const [viewMode, setViewMode] = useState("write"); // "write" | "annotate"
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setCurrentUser).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const sidebar = document.querySelector("aside");
@@ -77,9 +84,11 @@ export default function WriteEditor() {
   }, [title, content, form, stage, excerpt, wordCount, isNew, id, navigate, queryClient]);
 
   const meta = STAGE_META[stage];
+  const pieceId = isNew ? null : id;
+  const isOwner = !isNew && piece?.[0]?.created_by_id === currentUser?.id;
 
   return (
-    <div className="max-w-[860px] mx-auto" style={{ padding: focusMode ? "52px 52px 72px" : "52px 52px 72px", transition: "all .3s" }}>
+    <div className="mx-auto" style={{ maxWidth: viewMode === "annotate" ? "1200px" : "860px", padding: "52px 52px 72px", transition: "max-width .3s" }}>
       {/* Top bar */}
       <div className="flex justify-between items-center mb-8">
         <button
@@ -90,6 +99,29 @@ export default function WriteEditor() {
           ← BACK TO GARDEN
         </button>
         <div className="flex items-center gap-2">
+          {/* View mode toggle — only for saved pieces */}
+          {!isNew && (
+            <div className="flex rounded-lg overflow-hidden" style={{ border: "1px solid rgba(40,40,31,.18)" }}>
+              {["write", "annotate"].map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode)}
+                  className="cursor-pointer border-none transition-colors"
+                  style={{
+                    fontFamily: "'IBM Plex Mono', monospace",
+                    fontSize: "10.5px",
+                    letterSpacing: "1.5px",
+                    textTransform: "uppercase",
+                    padding: "10px 14px",
+                    background: viewMode === mode ? "#23402b" : "transparent",
+                    color: viewMode === mode ? "#f3ecd8" : "#5d7a4f",
+                  }}
+                >
+                  {mode === "write" ? "Write" : "✦ Margins"}
+                </button>
+              ))}
+            </div>
+          )}
           <button
             onClick={() => setFocusMode((f) => !f)}
             title={focusMode ? "Exit focus mode (Esc)" : "Enter focus mode"}
@@ -167,14 +199,30 @@ export default function WriteEditor() {
         style={{ fontSize: "16px", color: "#8a8270" }}
       />
 
-      {/* Content editor */}
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Begin writing..."
-        className="w-full bg-transparent border-none outline-none resize-none font-display"
-        style={{ fontSize: "18px", lineHeight: 1.8, color: "#23211a", minHeight: "400px" }}
-      />
+      {/* Content editor / margin view */}
+      {viewMode === "write" ? (
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Begin writing..."
+          className="w-full bg-transparent border-none outline-none resize-none font-display"
+          style={{ fontSize: "18px", lineHeight: 1.8, color: "#23211a", minHeight: "400px" }}
+        />
+      ) : (
+        <div className="mt-2">
+          <div className="mb-5 pb-4" style={{ borderBottom: "1px solid rgba(40,40,31,.1)" }}>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10.5px", letterSpacing: "2px", color: "#a08b5e", textTransform: "uppercase" }}>
+              Margin Notes — hover any line to leave a note{isOwner && " · accept or dismiss notes others leave"}
+            </div>
+          </div>
+          <MarginAnnotations
+            pieceId={pieceId}
+            content={content}
+            currentUser={currentUser}
+            isOwner={isOwner}
+          />
+        </div>
+      )}
     </div>
   );
 }
