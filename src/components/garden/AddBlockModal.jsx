@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { X, Image, Link2, Music, Type, Quote } from "lucide-react";
+import { X, Image, Link2, Music, Type, MessageSquareQuote } from "lucide-react";
 
 const TYPES = [
   { key: "image", label: "Image", icon: Image },
-  { key: "quote", label: "Quote", icon: Quote },
+  { key: "quote", label: "Quote", icon: MessageSquareQuote },
   { key: "text", label: "Text", icon: Type },
   { key: "link", label: "Link", icon: Link2 },
   { key: "music", label: "Music", icon: Music },

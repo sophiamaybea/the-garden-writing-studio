@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { Plus, X, Image, Link2, Music, Type, Quote } from "lucide-react";
+import { Plus } from "lucide-react";
 import AddBlockModal from "@/components/garden/AddBlockModal";
 import BlockTile from "@/components/garden/BlockTile";
 
@@ -12,11 +12,11 @@ export default function BoardView() {
   const qc = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
 
-  const { data: boards = [] } = useQuery({
+  const { data: boardList = [] } = useQuery({
     queryKey: ["board", id],
-    queryFn: () => base44.entities.Board.filter({ id }),
+    queryFn: () => base44.entities.Board.list(),
   });
-  const board = boards[0];
+  const board = boardList.find((b) => b.id === id);
 
   const { data: blocks = [], isLoading } = useQuery({
     queryKey: ["blocks", id],
