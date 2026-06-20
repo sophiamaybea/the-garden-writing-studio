@@ -1,0 +1,30 @@
+{
+  "name": "StudioWallPost",
+  "type": "object",
+  "properties": {
+    "author_name": {
+      "type": "string"
+    },
+    "post_type": {
+      "type": "string",
+      "enum": [
+        "poem",
+        "essay",
+        "story",
+        "notes",
+        "fragment"
+      ]
+    },
+    "excerpt_line": {
+      "type": "string"
+    },
+    "reader_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "author_name",
+    "excerpt_line"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "WorkshopRoom",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "time_label": {
+      "type": "string"
+    },
+    "attendee_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

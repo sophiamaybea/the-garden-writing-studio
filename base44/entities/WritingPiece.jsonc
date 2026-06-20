@@ -1,0 +1,46 @@
+{
+  "name": "WritingPiece",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "form": {
+      "type": "string",
+      "enum": [
+        "poem",
+        "essay",
+        "story",
+        "notes"
+      ],
+      "default": "poem"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "seedling",
+        "growing",
+        "bloom",
+        "resting"
+      ],
+      "default": "seedling"
+    },
+    "excerpt": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "word_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_tended": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}
