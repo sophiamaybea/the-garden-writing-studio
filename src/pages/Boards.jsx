@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, Lock, Globe } from "lucide-react";
 
 export default function Boards() {
   const navigate = useNavigate();
@@ -82,38 +82,61 @@ export default function Boards() {
 }
 
 function BoardCard({ board, onClick }) {
+  const qc = useQueryClient();
   const { data: blocks = [] } = useQuery({
     queryKey: ["blocks", board.id],
     queryFn: () => base44.entities.Block.filter({ board_id: board.id }, "-created_date", 4),
+  });
+
+  const togglePrivacy = useMutation({
+    mutationFn: () => base44.entities.Board.update(board.id, { is_public: !board.is_public }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["boards"] }),
   });
 
   const images = blocks.filter((b) => b.image_url);
 
   return (
     <div
-      onClick={onClick}
-      className="rounded-2xl overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:-translate-y-[2px]"
+      className="rounded-2xl overflow-hidden transition-all hover:shadow-lg hover:-translate-y-[2px]"
       style={{ background: "#e7ddc6", border: "1px solid rgba(40,40,31,.12)" }}
     >
       {/* Preview grid */}
-      <div className="grid grid-cols-2 gap-[2px]" style={{ height: "140px", background: "#d4c9b0" }}>
-        {images.slice(0, 4).map((b, i) => (
-          <div key={i} className="overflow-hidden" style={{ background: "#c8bc9e" }}>
-            <img src={b.image_url} alt="" className="w-full h-full object-cover" />
-          </div>
-        ))}
-        {images.length === 0 && (
-          <div className="col-span-2 row-span-2 flex items-center justify-center" style={{ color: "#a08b5e" }}>
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-          </div>
-        )}
-      </div>
-      <div style={{ padding: "14px 16px 16px" }}>
-        <div className="font-display text-lg font-medium" style={{ color: "#23211a" }}>{board.title}</div>
-        {board.description && <div className="font-display italic mt-1 text-sm" style={{ color: "#8a836f" }}>{board.description}</div>}
-        <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: ".5px", color: "#9a917d", marginTop: "8px", textTransform: "uppercase" }}>
-          {blocks.length} block{blocks.length !== 1 ? "s" : ""}
+      <div onClick={onClick} className="cursor-pointer">
+        <div className="grid grid-cols-2 gap-[2px]" style={{ height: "140px", background: "#d4c9b0" }}>
+          {images.slice(0, 4).map((b, i) => (
+            <div key={i} className="overflow-hidden" style={{ background: "#c8bc9e" }}>
+              <img src={b.image_url} alt="" className="w-full h-full object-cover" />
+            </div>
+          ))}
+          {images.length === 0 && (
+            <div className="col-span-2 row-span-2 flex items-center justify-center" style={{ color: "#a08b5e" }}>
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            </div>
+          )}
         </div>
+        <div style={{ padding: "14px 16px 10px" }}>
+          <div className="font-display text-lg font-medium" style={{ color: "#23211a" }}>{board.title}</div>
+          {board.description && <div className="font-display italic mt-1 text-sm" style={{ color: "#8a836f" }}>{board.description}</div>}
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: ".5px", color: "#9a917d", marginTop: "8px", textTransform: "uppercase" }}>
+            {blocks.length} block{blocks.length !== 1 ? "s" : ""}
+          </div>
+        </div>
+      </div>
+      {/* Privacy toggle */}
+      <div style={{ padding: "0 16px 14px" }}>
+        <button
+          onClick={(e) => { e.stopPropagation(); togglePrivacy.mutate(); }}
+          className="flex items-center gap-[6px] cursor-pointer border-none rounded-lg transition-colors"
+          style={{
+            fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "1px", textTransform: "uppercase",
+            padding: "6px 10px",
+            background: board.is_public ? "rgba(94,122,79,.15)" : "rgba(40,40,31,.08)",
+            color: board.is_public ? "#5d7a4f" : "#8a836f",
+          }}
+        >
+          {board.is_public ? <Globe size={11} /> : <Lock size={11} />}
+          {board.is_public ? "Public" : "Private"}
+        </button>
       </div>
     </div>
   );

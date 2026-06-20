@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
-import { Plus } from "lucide-react";
+import { Plus, Lock, Globe } from "lucide-react";
 import AddBlockModal from "@/components/garden/AddBlockModal";
 import BlockTile from "@/components/garden/BlockTile";
 
@@ -28,6 +28,11 @@ export default function BoardView() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["blocks", id] }),
   });
 
+  const togglePrivacy = useMutation({
+    mutationFn: () => base44.entities.Board.update(id, { is_public: !board?.is_public }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["board", id] }),
+  });
+
   if (!board && !isLoading) return null;
 
   return (
@@ -46,13 +51,28 @@ export default function BoardView() {
           <h1 className="font-display font-normal mt-1" style={{ fontSize: "42px", color: "#23211a" }}>{board?.title}</h1>
           {board?.description && <div className="font-display italic mt-1" style={{ fontSize: "16px", color: "#8a836f" }}>{board.description}</div>}
         </div>
-        <button
-          onClick={() => setShowAdd(true)}
-          className="flex items-center gap-2 border-none cursor-pointer rounded-lg hover:bg-[#193020] transition-colors"
-          style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "11.5px", fontWeight: 500, letterSpacing: "1.5px", textTransform: "uppercase", padding: "13px 18px" }}
-        >
-          <Plus size={14} /> Add block
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => togglePrivacy.mutate()}
+            className="flex items-center gap-2 border-none cursor-pointer rounded-lg transition-colors"
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "1.5px", textTransform: "uppercase",
+              padding: "13px 16px", border: "1px solid rgba(40,40,31,.18)",
+              background: board?.is_public ? "rgba(94,122,79,.12)" : "transparent",
+              color: board?.is_public ? "#5d7a4f" : "#8a836f",
+            }}
+          >
+            {board?.is_public ? <Globe size={13} /> : <Lock size={13} />}
+            {board?.is_public ? "Public" : "Private"}
+          </button>
+          <button
+            onClick={() => setShowAdd(true)}
+            className="flex items-center gap-2 border-none cursor-pointer rounded-lg hover:bg-[#193020] transition-colors"
+            style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "11.5px", fontWeight: 500, letterSpacing: "1.5px", textTransform: "uppercase", padding: "13px 18px" }}
+          >
+            <Plus size={14} /> Add block
+          </button>
+        </div>
       </div>
 
       <div style={{ height: "1px", background: "rgba(40,40,31,.12)", margin: "28px 0" }} />
