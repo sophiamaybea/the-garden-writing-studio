@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Link, useNavigate } from "react-router-dom";
 import OrbitalHero from "@/components/garden/OrbitalHero";
 import ActiveProjectRow from "@/components/garden/ActiveProjectRow";
-import { getDayLabel, formatTended } from "@/lib/gardenUtils";
+import { getDayLabel, formatTended, STAGE_META } from "@/lib/gardenUtils";
 import moment from "moment";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [activeStage, setActiveStage] = useState(null);
+  const projectsRef = useRef(null);
+
+  const handleStageClick = (stage) => {
+    setActiveStage((prev) => prev === stage ? null : stage);
+    setTimeout(() => projectsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  };
   const { data: pieces = [] } = useQuery({
     queryKey: ["pieces"],
     queryFn: () => base44.entities.WritingPiece.list("-updated_date"),
@@ -26,7 +33,10 @@ export default function Dashboard() {
     queryFn: () => base44.entities.WorkshopRoom.list("scheduled_date", 3),
   });
 
-  const activePieces = pieces.filter((p) => p.stage !== "resting").slice(0, 3);
+  const activePieces = (activeStage
+    ? pieces.filter((p) => p.stage === activeStage)
+    : pieces.filter((p) => p.stage !== "resting")
+  ).slice(0, 5);
   const dayNumber = pieces.length > 0
     ? Math.max(1, Math.floor((Date.now() - new Date(pieces[pieces.length - 1]?.created_date).getTime()) / 86400000))
     : 1;
@@ -35,7 +45,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <OrbitalHero pieces={pieces} />
+      <OrbitalHero pieces={pieces} activeStage={activeStage} onStageClick={handleStageClick} />
 
       <div className="max-w-[1180px] mx-auto" style={{ padding: "44px 52px 72px" }}>
         {/* Toolbar */}
@@ -109,12 +119,23 @@ export default function Dashboard() {
           {/* Left column */}
           <div>
             {/* Active projects */}
-            <div className="flex justify-between items-baseline pb-[11px]" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2.5px", color: "#8a836f", borderBottom: "1px solid rgba(40,40,31,.18)" }}>
-              ACTIVE PROJECTS
+            <div ref={projectsRef} className="flex justify-between items-baseline pb-[11px]" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2.5px", color: "#8a836f", borderBottom: "1px solid rgba(40,40,31,.18)" }}>
+              <span className="flex items-center gap-2">
+                ACTIVE PROJECTS
+                {activeStage && (
+                  <span className="flex items-center gap-1" style={{ color: STAGE_META[activeStage].color }}>
+                    — {STAGE_META[activeStage].label}
+                    <button onClick={() => setActiveStage(null)} className="bg-transparent border-none cursor-pointer ml-1 opacity-60 hover:opacity-100" style={{ color: "inherit", fontSize: "13px", lineHeight: 1 }}>✕</button>
+                  </span>
+                )}
+              </span>
               <Link to="/projects" className="no-underline cursor-pointer hover:text-[#23402b] transition-colors" style={{ color: "#5d7a4f" }}>ALL {pieces.length} →</Link>
             </div>
             <div className="mt-[6px]">
-              {activePieces.map((p) => <ActiveProjectRow key={p.id} piece={p} />)}
+              {activePieces.length > 0
+                ? activePieces.map((p) => <ActiveProjectRow key={p.id} piece={p} />)
+                : <div className="py-8 font-display italic text-center" style={{ color: "#8a836f" }}>No pieces in this stage yet.</div>
+              }
             </div>
 
             {/* Community / Studio Wall */}

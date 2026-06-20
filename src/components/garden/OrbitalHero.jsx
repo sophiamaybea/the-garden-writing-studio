@@ -2,7 +2,7 @@ import React from "react";
 import StageDisc from "./StageDisc";
 import { STAGE_META, getSeason, getGreeting } from "@/lib/gardenUtils";
 
-export default function OrbitalHero({ pieces }) {
+export default function OrbitalHero({ pieces, activeStage, onStageClick }) {
   const stageCounts = { seedling: 0, growing: 0, bloom: 0, resting: 0 };
   pieces.forEach((p) => { stageCounts[p.stage] = (stageCounts[p.stage] || 0) + 1; });
 
@@ -67,18 +67,32 @@ export default function OrbitalHero({ pieces }) {
       </div>
 
       {/* Stage discs */}
-      <span className="absolute left-1/2 top-[380px] w-[132px] h-[132px] -ml-[66px] -mt-[66px]" style={{ transform: "translate(-175px,-175px)", filter: "drop-shadow(0 8px 20px rgba(0,0,0,.25))" }}>
-        <StageDisc stage="seedling" />
-      </span>
-      <span className="absolute left-1/2 top-[380px] w-[132px] h-[132px] -ml-[66px] -mt-[66px]" style={{ transform: "translate(175px,-175px)", filter: "drop-shadow(0 8px 20px rgba(0,0,0,.25))" }}>
-        <StageDisc stage="growing" />
-      </span>
-      <span className="absolute left-1/2 top-[380px] w-[132px] h-[132px] -ml-[66px] -mt-[66px]" style={{ transform: "translate(175px,175px)", filter: "drop-shadow(0 8px 20px rgba(0,0,0,.25))" }}>
-        <StageDisc stage="bloom" />
-      </span>
-      <span className="absolute left-1/2 top-[380px] w-[132px] h-[132px] -ml-[66px] -mt-[66px]" style={{ transform: "translate(-175px,175px)", filter: "drop-shadow(0 8px 20px rgba(0,0,0,.25))" }}>
-        <StageDisc stage="resting" />
-      </span>
+      {[
+        { stage: "seedling", tx: -175, ty: -175 },
+        { stage: "growing",  tx:  175, ty: -175 },
+        { stage: "bloom",    tx:  175, ty:  175 },
+        { stage: "resting",  tx: -175, ty:  175 },
+      ].map(({ stage, tx, ty }) => {
+        const isActive = activeStage === stage;
+        const isDimmed = activeStage && !isActive;
+        return (
+          <button
+            key={stage}
+            onClick={() => onStageClick(stage)}
+            title={`Filter by ${stage}`}
+            className="absolute left-1/2 top-[380px] w-[132px] h-[132px] -ml-[66px] -mt-[66px] bg-transparent border-none p-0"
+            style={{
+              transform: `translate(${tx}px,${ty}px) scale(${isActive ? 1.12 : 1})`,
+              filter: `drop-shadow(0 8px 20px rgba(0,0,0,.25)) ${isActive ? "drop-shadow(0 0 18px rgba(240,220,160,.45))" : ""}`,
+              opacity: isDimmed ? 0.4 : 1,
+              transition: "transform .25s ease, opacity .25s ease, filter .25s ease",
+              cursor: "pointer",
+            }}
+          >
+            <StageDisc stage={stage} />
+          </button>
+        );
+      })}
 
       {/* Corner labels */}
       <div className="absolute top-[70px] left-[40px] w-[210px] text-left">
