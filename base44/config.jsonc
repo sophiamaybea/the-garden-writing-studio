@@ -1,0 +1,9 @@
+{
+  "name": "The Garden \u2014 Writing Studio",
+  "site": {
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
+    "serveCommand": "npm run dev",
+    "outputDirectory": "./dist"
+  }
+}
