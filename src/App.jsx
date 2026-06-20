@@ -19,6 +19,7 @@ import StudioWall from '@/pages/StudioWall';
 import Feed from '@/pages/Feed';
 import Rooms from '@/pages/Rooms';
 import AdminPanel from '@/pages/AdminPanel';
+import Writers from '@/pages/Writers';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -55,6 +56,7 @@ const AuthenticatedApp = () => {
           <Route path="/feed" element={<Feed />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/writers" element={<Writers />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
