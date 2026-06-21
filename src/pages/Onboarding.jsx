@@ -148,6 +148,17 @@ export default function Onboarding() {
     queryFn: () => base44.auth.me(),
   });
 
+  const trackStep = (completedStep) => {
+    const stepNames = ["about_you", "writing_identity", "how_you_tend", "first_seed"];
+    base44.analytics.track({
+      eventName: "onboarding_step_completed",
+      properties: {
+        step_number: completedStep + 1,
+        step_name: stepNames[completedStep],
+      },
+    });
+  };
+
   const toggle = (arr, setArr, val) =>
     setArr(arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val]);
 
@@ -325,7 +336,7 @@ export default function Onboarding() {
                 <button
                   type="button"
                   disabled={saving}
-                  onClick={() => finishOnboarding("/write/new")}
+                  onClick={() => { trackStep(3); finishOnboarding("/write/new"); }}
                   className="text-left rounded-2xl cursor-pointer border-none transition-all disabled:opacity-50 hover:brightness-95"
                   style={{ background: "#23402b", padding: "32px 30px" }}
                 >
@@ -337,7 +348,7 @@ export default function Onboarding() {
                 <button
                   type="button"
                   disabled={saving}
-                  onClick={() => finishOnboarding("/")}
+                  onClick={() => { trackStep(3); finishOnboarding("/"); }}
                   className="text-left rounded-2xl cursor-pointer border-none transition-all disabled:opacity-50 hover:bg-[#ddd5be]"
                   style={{ background: "#e7ddc6", padding: "32px 30px", border: "1.5px solid rgba(40,40,31,.15)" }}
                 >
@@ -370,7 +381,7 @@ export default function Onboarding() {
               ) : <div />}
               <button
                 type="button"
-                onClick={() => setStep((s) => s + 1)}
+                onClick={() => { trackStep(step); setStep((s) => s + 1); }}
                 disabled={!canNext()}
                 className="rounded-xl border-none cursor-pointer transition-colors disabled:opacity-35 hover:bg-[#193020]"
                 style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", fontWeight: 500, letterSpacing: "1.5px", textTransform: "uppercase", padding: "14px 30px" }}
