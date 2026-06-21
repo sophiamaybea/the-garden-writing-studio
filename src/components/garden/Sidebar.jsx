@@ -43,7 +43,7 @@ export default function Sidebar() {
     : null;
 
   return (
-    <aside className="w-[248px] flex-none flex flex-col py-8 px-[26px]" style={{ background: "#e7ddc6", borderRight: "1px solid rgba(40,40,31,.1)" }}>
+    <aside className="w-[248px] flex-none flex flex-col py-8 px-[26px]" style={{ background: "#efefed", borderRight: "1px solid rgba(40,40,31,.1)" }}>
       <div className="flex items-center gap-[11px]">
         <GardenIcon size={30} />
         <div className="font-display text-xl font-medium" style={{ letterSpacing: ".2px", color: "#23402b" }}>The Garden</div>

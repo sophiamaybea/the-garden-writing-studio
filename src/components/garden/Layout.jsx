@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 
 export default function Layout() {
   return (
-    <div className="flex h-screen w-full overflow-hidden relative" style={{ background: "#efe7d3", color: "#23211a" }}>
+    <div className="flex h-screen w-full overflow-hidden relative" style={{ background: "#f7f7f5", color: "#23211a" }}>
       {/* Paper texture overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-50"

@@ -6,17 +6,17 @@
 
 @layer base {
   :root {
-    --background: 38 100% 99%;
+    --background: 0 0% 99%;
     --foreground: 45 15% 11%;
-    --card: 38 32% 83%;
+    --card: 0 0% 93%;
     --card-foreground: 45 15% 11%;
-    --popover: 38 38% 90%;
+    --popover: 0 0% 96%;
     --popover-foreground: 45 15% 11%;
     --primary: 150 28% 19%;
-    --primary-foreground: 38 47% 88%;
-    --secondary: 38 32% 83%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 93%;
     --secondary-foreground: 45 15% 11%;
-    --muted: 38 32% 83%;
+    --muted: 0 0% 93%;
     --muted-foreground: 38 12% 50%;
     --accent: 25 60% 57%;
     --accent-foreground: 38 47% 88%;
@@ -35,7 +35,7 @@
     --font-body: 'Hanken Grotesk', sans-serif;
     --font-display: 'Newsreader', serif;
     --font-mono: 'IBM Plex Mono', monospace;
-    --sidebar-background: 38 32% 83%;
+    --sidebar-background: 0 0% 92%;
     --sidebar-foreground: 45 15% 11%;
     --sidebar-primary: 150 28% 19%;
     --sidebar-primary-foreground: 38 47% 88%;
@@ -45,8 +45,8 @@
     --sidebar-ring: 150 28% 19%;
 
     --garden-dark: #1d3a26;
-    --garden-cream: #efe7d3;
-    --garden-warm-cream: #e7ddc6;
+    --garden-cream: #f7f7f5;
+    --garden-warm-cream: #f0f0ed;
     --garden-text: #23211a;
     --garden-green: #23402b;
     --garden-green-light: #9bbf9f;
