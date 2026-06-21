@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 
 const avatarColors = ["#6f8a5a", "#c0683b", "#23402b", "#9a7d4f", "#5e7a4f", "#a08b5e"];
 
-function Avatar({ name, size = 32 }) {
+function Avatar({ name, size = 30 }) {
   const initial = name?.charAt(0)?.toUpperCase() || "?";
   const colorIdx = initial.charCodeAt(0) % avatarColors.length;
   return (
@@ -17,6 +17,72 @@ function Avatar({ name, size = 32 }) {
     </div>
   );
 }
+
+// Notification type styles
+const TYPE_META = {
+  friend_request: { icon: "✦", color: "#a08b5e", label: "Friend request" },
+  carry:          { icon: "›", color: "#c0683b", label: "Carried a line" },
+  sit_with:       { icon: "◎", color: "#5e7a4f", label: "Sitting with" },
+  annotation:     { icon: "✎", color: "#23402b", label: "Annotated" },
+};
+
+function NotifRow({ icon, color, name, body, sub, actions }) {
+  return (
+    <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(40,40,31,.08)" }}>
+      <div className="flex items-start gap-3">
+        <div className="relative flex-none">
+          <Avatar name={name} size={30} />
+          <span
+            className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full"
+            style={{ width: 14, height: 14, background: color, color: "#fff", fontSize: 9, fontWeight: 700, lineHeight: 1 }}
+          >
+            {icon}
+          </span>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12.5px", fontWeight: 600, color: "#23211a", lineHeight: 1.3 }}>
+            {name}
+          </div>
+          <div style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", color: "#5a5348", lineHeight: 1.4, marginTop: "1px" }}>
+            {body}
+          </div>
+          {sub && (
+            <div className="font-display italic mt-1" style={{ fontSize: "11.5px", color: "#9a8f7a", lineHeight: 1.35 }}>
+              "{sub}"
+            </div>
+          )}
+        </div>
+      </div>
+      {actions && <div className="flex gap-2 mt-2 ml-[42px]">{actions}</div>}
+    </div>
+  );
+}
+
+const MOCK_NOTIFICATIONS = [
+  {
+    id: "mock-carry-1",
+    type: "carry",
+    from_name: "Emilia Voss",
+    body: "carried a line from",
+    sub: "the light arrives before the sound does",
+    piece_title: "Threshold",
+  },
+  {
+    id: "mock-sit-1",
+    type: "sit_with",
+    from_name: "Theo Marsh",
+    body: "is sitting with",
+    piece_title: "What the heron left behind",
+  },
+  {
+    id: "mock-annotation-1",
+    type: "annotation",
+    from_name: "Rae Solano",
+    body: "annotated a line in",
+    sub: "consider breaking this before 'and'",
+    piece_title: "Field Notes, October",
+  },
+];
 
 export default function NotificationBell({ currentUser }) {
   const [open, setOpen] = useState(false);
@@ -61,6 +127,14 @@ export default function NotificationBell({ currentUser }) {
     },
   });
 
+  // Merge real friend requests + mock notifications
+  const allNotifs = [
+    ...incoming.map((r) => ({ id: r.id, type: "friend_request", _raw: r, from_name: r.from_name })),
+    ...MOCK_NOTIFICATIONS,
+  ];
+
+  const totalCount = allNotifs.length;
+
   return (
     <div ref={ref} className="relative">
       <button
@@ -70,12 +144,12 @@ export default function NotificationBell({ currentUser }) {
         title="Notifications"
       >
         <Bell size={16} />
-        {incoming.length > 0 && (
+        {totalCount > 0 && (
           <span
             className="absolute top-0 right-0 flex items-center justify-center rounded-full text-white"
             style={{ width: 14, height: 14, background: "#c0683b", fontSize: 8, fontFamily: "'IBM Plex Mono', monospace", fontWeight: 600 }}
           >
-            {incoming.length}
+            {totalCount}
           </span>
         )}
       </button>
@@ -83,47 +157,102 @@ export default function NotificationBell({ currentUser }) {
       {open && (
         <div
           className="absolute bottom-full mb-2 left-0 z-50 rounded-xl shadow-xl overflow-hidden"
-          style={{ width: 280, background: "#efe7d3", border: "1px solid rgba(40,40,31,.15)" }}
+          style={{ width: 300, background: "#efe7d3", border: "1px solid rgba(40,40,31,.15)" }}
         >
-          <div className="px-4 py-3" style={{ borderBottom: "1px solid rgba(40,40,31,.12)", fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#8a836f", textTransform: "uppercase" }}>
-            Notifications
+          {/* Header */}
+          <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: "1px solid rgba(40,40,31,.12)" }}>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#8a836f", textTransform: "uppercase" }}>
+              Notifications
+            </span>
+            {totalCount > 0 && (
+              <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", color: "#c0683b", letterSpacing: "1px" }}>
+                {totalCount} new
+              </span>
+            )}
           </div>
 
-          {incoming.length === 0 ? (
-            <div className="px-4 py-6 text-center font-display italic" style={{ color: "#9a917d", fontSize: "14px" }}>
+          {totalCount === 0 ? (
+            <div className="px-4 py-8 text-center font-display italic" style={{ color: "#9a917d", fontSize: "14px" }}>
               All quiet in the garden.
             </div>
           ) : (
-            <div>
-              {incoming.map((req) => (
-                <div key={req.id} className="px-4 py-3" style={{ borderBottom: "1px solid rgba(40,40,31,.08)" }}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <Avatar name={req.from_name} size={30} />
-                    <div className="min-w-0 flex-1">
-                      <div style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "13px", fontWeight: 600, color: "#23211a" }}>{req.from_name || "A writer"}</div>
-                      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "9.5px", color: "#9a917d", textTransform: "uppercase", letterSpacing: ".5px" }}>wants to be friends</div>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => respond.mutate({ requestId: req.id, status: "accepted", request: req })}
-                      disabled={respond.isPending}
-                      className="flex-1 cursor-pointer rounded-lg border-none transition-colors hover:bg-[#193020] disabled:opacity-50"
-                      style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "9.5px", letterSpacing: "1.5px", textTransform: "uppercase", padding: "7px" }}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() => respond.mutate({ requestId: req.id, status: "declined", request: req })}
-                      disabled={respond.isPending}
-                      className="flex-1 cursor-pointer rounded-lg transition-colors disabled:opacity-50"
-                      style={{ background: "transparent", color: "#8a836f", fontFamily: "'IBM Plex Mono', monospace", fontSize: "9.5px", letterSpacing: "1.5px", textTransform: "uppercase", padding: "7px", border: "1px solid rgba(40,40,31,.2)" }}
-                    >
-                      Decline
-                    </button>
-                  </div>
-                </div>
-              ))}
+            <div style={{ maxHeight: 380, overflowY: "auto" }}>
+              {allNotifs.map((notif) => {
+                const meta = TYPE_META[notif.type];
+
+                if (notif.type === "friend_request") {
+                  const req = notif._raw;
+                  return (
+                    <NotifRow
+                      key={notif.id}
+                      icon={meta.icon}
+                      color={meta.color}
+                      name={notif.from_name || "A writer"}
+                      body="wants to be friends"
+                      actions={
+                        <>
+                          <button
+                            onClick={() => respond.mutate({ requestId: req.id, status: "accepted", request: req })}
+                            disabled={respond.isPending}
+                            className="flex-1 cursor-pointer rounded-lg border-none transition-colors hover:bg-[#193020] disabled:opacity-50"
+                            style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", letterSpacing: "1.5px", textTransform: "uppercase", padding: "7px" }}
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => respond.mutate({ requestId: req.id, status: "declined", request: req })}
+                            disabled={respond.isPending}
+                            className="flex-1 cursor-pointer rounded-lg transition-colors disabled:opacity-50"
+                            style={{ background: "transparent", color: "#8a836f", fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", letterSpacing: "1.5px", textTransform: "uppercase", padding: "7px", border: "1px solid rgba(40,40,31,.2)" }}
+                          >
+                            Decline
+                          </button>
+                        </>
+                      }
+                    />
+                  );
+                }
+
+                if (notif.type === "carry") {
+                  return (
+                    <NotifRow
+                      key={notif.id}
+                      icon={meta.icon}
+                      color={meta.color}
+                      name={notif.from_name}
+                      body={<>{notif.body} <span className="font-display italic" style={{ color: "#5d7a4f" }}>"{notif.piece_title}"</span></>}
+                      sub={notif.sub}
+                    />
+                  );
+                }
+
+                if (notif.type === "sit_with") {
+                  return (
+                    <NotifRow
+                      key={notif.id}
+                      icon={meta.icon}
+                      color={meta.color}
+                      name={notif.from_name}
+                      body={<>{notif.body} <span className="font-display italic" style={{ color: "#5d7a4f" }}>"{notif.piece_title}"</span></>}
+                    />
+                  );
+                }
+
+                if (notif.type === "annotation") {
+                  return (
+                    <NotifRow
+                      key={notif.id}
+                      icon={meta.icon}
+                      color={meta.color}
+                      name={notif.from_name}
+                      body={<>{notif.body} <span className="font-display italic" style={{ color: "#5d7a4f" }}>"{notif.piece_title}"</span></>}
+                      sub={notif.sub}
+                    />
+                  );
+                }
+
+                return null;
+              })}
             </div>
           )}
         </div>
