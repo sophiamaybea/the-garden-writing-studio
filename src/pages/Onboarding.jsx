@@ -18,7 +18,18 @@ const SHARING_OPTIONS = [
   { value: "open_studio",  label: "Open studio",    desc: "Anyone in the garden" },
   { value: "published",    label: "Publish widely", desc: "The world is ready" },
 ];
-const GOALS = ["Finish a project", "Find readers", "Give feedback", "Join workshops", "Collect inspiration", "Build a writing practice"];
+const INTENTION_CARDS = [
+  { value: "Finish something",        icon: "🌱", label: "Finish something" },
+  { value: "Find readers",            icon: "👁",  label: "Find readers" },
+  { value: "Give feedback",           icon: "🤝", label: "Give feedback" },
+  { value: "Just write, quietly",     icon: "🌿", label: "Just write, quietly" },
+  { value: "Be part of something",    icon: "✨", label: "Be part of something" },
+];
+const OPENNESS_OPTIONS = [
+  { value: "private",      label: "Walled",  desc: "Just for me" },
+  { value: "inner_circle", label: "Gated",   desc: "Trusted few" },
+  { value: "open_studio",  label: "Open",    desc: "All are welcome" },
+];
 
 const TOTAL_STEPS = 4;
 
@@ -205,6 +216,9 @@ export default function Onboarding() {
     return true;
   };
 
+  // Map display goals back to stored values
+  const goalsForSave = goals;
+
   const finishOnboarding = async (destination) => {
     if (saving) return;
     setSaving(true);
@@ -385,42 +399,81 @@ export default function Onboarding() {
           </div>
         )}
 
-        {/* ── Step 2: How you tend ── */}
+        {/* ── Step 2: The Intention ── */}
         {step === 2 && (
-          <div className="flex flex-col gap-10" style={{ animation: "fadeUp .5s ease both" }}>
+          <div className="flex flex-col gap-12" style={{ animation: "fadeUp .5s ease both" }}>
             <div>
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "3px", color: "rgba(212,201,168,0.5)", textTransform: "uppercase", marginBottom: 20 }}>
-                How you tend
-              </div>
-              <h1 className="font-display font-normal" style={{ fontSize: "52px", color: "#f3ecd8", letterSpacing: "-.5px", lineHeight: 1.05, marginBottom: 16 }}>
-                How do you<br />tend your work?
+              <h1 className="font-display font-normal" style={{ fontSize: "54px", color: "#f3ecd8", letterSpacing: "-.5px", lineHeight: 1.05, marginBottom: 14 }}>
+                Why did you come<br />to the Garden?
               </h1>
-              <p className="font-display italic" style={{ fontSize: "17px", color: "rgba(243,236,216,0.5)", lineHeight: 1.65 }}>
-                These preferences shape what the garden<br />shows you and who sees your writing.
+              <p className="font-display italic" style={{ fontSize: "18px", color: "rgba(243,236,216,0.45)", lineHeight: 1.65 }}>
+                No wrong answers.
               </p>
             </div>
-            <div className="flex flex-col gap-8">
-              <div>
-                <FieldLabel>How you prefer to share</FieldLabel>
-                <div className="grid grid-cols-2 gap-2">
-                  {SHARING_OPTIONS.map((s) => (
-                    <LevelPill key={s.value} label={s.label} sub={s.desc} selected={sharingPref === s.value} onClick={() => setSharingPref(s.value)} />
-                  ))}
-                </div>
+
+            {/* Intention cards */}
+            <div className="grid grid-cols-3 gap-3" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+              {INTENTION_CARDS.map((card) => {
+                const sel = goals.includes(card.value);
+                return (
+                  <button
+                    key={card.value}
+                    type="button"
+                    onClick={() => toggle(goals, setGoals, card.value)}
+                    className="flex flex-col items-center justify-center rounded-2xl cursor-pointer border-none transition-all duration-200"
+                    style={{
+                      aspectRatio: "1 / 1",
+                      background: sel ? "rgba(193,104,59,0.15)" : "rgba(243,236,216,0.05)",
+                      border: sel ? "1.5px solid rgba(193,104,59,0.7)" : "1.5px solid rgba(243,236,216,0.1)",
+                      boxShadow: sel ? "0 0 20px rgba(193,104,59,0.2)" : "none",
+                      gap: 10,
+                      padding: "16px 10px",
+                    }}
+                    onMouseEnter={(e) => { if (!sel) { e.currentTarget.style.boxShadow = "0 0 18px rgba(243,236,216,0.08)"; e.currentTarget.style.border = "1.5px solid rgba(243,236,216,0.22)"; } }}
+                    onMouseLeave={(e) => { if (!sel) { e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.border = "1.5px solid rgba(243,236,216,0.1)"; } }}
+                  >
+                    <span style={{ fontSize: "26px", lineHeight: 1 }}>{card.icon}</span>
+                    <span style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "12px", fontWeight: 500, color: sel ? "#f3ecd8" : "rgba(243,236,216,0.5)", textAlign: "center", lineHeight: 1.4 }}>{card.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Openness */}
+            <div className="flex flex-col gap-4">
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "2.5px", color: "rgba(212,201,168,0.4)", textTransform: "uppercase" }}>
+                How open is your garden?
               </div>
-              <div>
-                <FieldLabel>What brings you here</FieldLabel>
-                <div className="flex flex-wrap gap-2">
-                  {GOALS.map((g) => (
-                    <FormChip key={g} label={g} selected={goals.includes(g)} onClick={() => toggle(goals, setGoals, g)} />
-                  ))}
-                </div>
+              <div className="grid grid-cols-3 gap-3">
+                {OPENNESS_OPTIONS.map((o) => {
+                  const sel = sharingPref === o.value;
+                  return (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setSharingPref(o.value)}
+                      className="flex flex-col items-center justify-center rounded-xl cursor-pointer border-none transition-all duration-200"
+                      style={{
+                        padding: "18px 12px",
+                        background: sel ? "rgba(193,104,59,0.15)" : "rgba(243,236,216,0.05)",
+                        border: sel ? "1.5px solid rgba(193,104,59,0.7)" : "1.5px solid rgba(243,236,216,0.1)",
+                        boxShadow: sel ? "0 0 16px rgba(193,104,59,0.2)" : "none",
+                      }}
+                      onMouseEnter={(e) => { if (!sel) { e.currentTarget.style.border = "1.5px solid rgba(243,236,216,0.22)"; } }}
+                      onMouseLeave={(e) => { if (!sel) { e.currentTarget.style.border = "1.5px solid rgba(243,236,216,0.1)"; } }}
+                    >
+                      <div style={{ fontFamily: "'Hanken Grotesk', sans-serif", fontSize: "15px", fontWeight: 600, color: sel ? "#f3ecd8" : "rgba(243,236,216,0.6)" }}>{o.label}</div>
+                      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", color: "rgba(243,236,216,0.3)", marginTop: 5 }}>{o.desc}</div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
+
             <div className="flex items-center justify-between pt-2">
               <BackButton onClick={() => setStep((s) => s - 1)} />
               <ContinueButton onClick={advance} disabled={!canNext()}>
-                I tend like this →
+                Set my intention →
               </ContinueButton>
             </div>
           </div>
