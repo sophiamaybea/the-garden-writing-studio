@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { STAGE_META, getFormLabel, formatTended } from "@/lib/gardenUtils";
 import StageMark from "@/components/garden/StageMark";
-import { PanelRight, PanelRightClose, Maximize2, Minimize2 } from "lucide-react";
+import { PanelRight, PanelRightClose, Maximize2, Minimize2, Bookmark, BookmarkCheck, ArrowLeft } from "lucide-react";
 import AnnotationPanel from "@/components/garden/AnnotationPanel";
 import CarryModal from "@/components/garden/CarryModal";
 
@@ -100,6 +100,22 @@ export default function WriteEditor() {
     enabled: !isNew,
   });
 
+  const mySitWith = sitWiths.find((s) => s.reader_id === currentUser?.id);
+
+  const toggleSitWith = useMutation({
+    mutationFn: () =>
+      mySitWith
+        ? base44.entities.SitWith.delete(mySitWith.id)
+        : base44.entities.SitWith.create({
+            piece_id: id,
+            piece_title: title,
+            piece_author_id: piece?.[0]?.created_by_id,
+            reader_id: currentUser.id,
+            reader_name: currentUser.full_name,
+          }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["sitwith", id] }),
+  });
+
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
 
   const handleSave = useCallback(async () => {
@@ -138,10 +154,10 @@ export default function WriteEditor() {
         {/* Left: back */}
         <button
           onClick={() => navigate("/projects")}
-          className="bg-transparent border-none cursor-pointer hover:text-[#23402b] transition-colors"
+          className="flex items-center gap-2 bg-transparent border-none cursor-pointer hover:text-[#23402b] transition-colors"
           style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "1.5px", textTransform: "uppercase", color: "#5d7a4f" }}
         >
-          ← Garden
+          <ArrowLeft size={13} /> My Projects
         </button>
 
         {/* Centre: pills */}
@@ -212,6 +228,21 @@ export default function WriteEditor() {
 
         {/* Right: actions */}
         <div className="flex items-center gap-2">
+          {!isNew && !isOwner && currentUser && (
+            <button
+              onClick={() => toggleSitWith.mutate()}
+              disabled={toggleSitWith.isPending}
+              className="flex items-center gap-1 border-none cursor-pointer rounded-lg transition-colors hover:bg-black/8"
+              style={{
+                background: mySitWith ? "rgba(35,64,43,.1)" : "transparent",
+                color: mySitWith ? "#23402b" : "#8a836f",
+                padding: "8px 10px",
+              }}
+              title={mySitWith ? "Stop sitting with this" : "Sit with this piece"}
+            >
+              {mySitWith ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+            </button>
+          )}
           {!isNew && (
             <button
               onClick={() => setShowPanel((v) => !v)}
@@ -246,7 +277,7 @@ export default function WriteEditor() {
         {/* Writing canvas */}
         <div
           className="flex-1 overflow-y-auto relative"
-          style={{ padding: "64px 72px 120px" }}
+          style={{ padding: "80px 80px 160px" }}
           ref={canvasRef}
           onMouseUp={() => {
             const sel = window.getSelection();
@@ -286,32 +317,32 @@ export default function WriteEditor() {
               </button>
             </div>
           )}
-          <div style={{ maxWidth: "680px", margin: "0 auto" }}>
+          <div style={{ maxWidth: "640px", margin: "0 auto" }}>
             {/* Title */}
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Title your piece…"
-              className="w-full bg-transparent border-none outline-none font-display font-normal mb-3"
-              style={{ fontSize: "44px", color: "#23211a", lineHeight: 1.1, letterSpacing: "-0.5px" }}
+              className="w-full bg-transparent border-none outline-none font-display font-normal mb-4"
+              style={{ fontSize: "46px", color: "#23211a", lineHeight: 1.08, letterSpacing: "-0.6px" }}
             />
             {/* Excerpt / subtitle */}
             <input
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               placeholder="An opening line or brief excerpt…"
-              className="w-full bg-transparent border-none outline-none font-display italic mb-10"
-              style={{ fontSize: "17px", color: "#9a8f7a" }}
+              className="w-full bg-transparent border-none outline-none font-display italic mb-12"
+              style={{ fontSize: "18px", color: "#9a8f7a", lineHeight: 1.6 }}
             />
             {/* Divider */}
-            <div style={{ height: "1px", background: "rgba(40,40,31,.1)", marginBottom: "40px" }} />
+            <div style={{ height: "1px", background: "rgba(40,40,31,.08)", marginBottom: "52px" }} />
             {/* Body */}
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Begin writing…"
               className="w-full bg-transparent border-none outline-none resize-none font-display"
-              style={{ fontSize: "19px", lineHeight: 1.85, color: "#23211a", minHeight: "480px" }}
+              style={{ fontSize: "20px", lineHeight: 2.0, color: "#23211a", minHeight: "520px", letterSpacing: "0.01em" }}
               onInput={(e) => { e.target.style.height = "auto"; e.target.style.height = e.target.scrollHeight + "px"; }}
             />
           </div>

@@ -59,16 +59,16 @@ export default function StudioWall() {
                 <div className="min-w-0 flex-1">
                   <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "1px", color: "#9a917d", textTransform: "uppercase" }}>
                     <span className="font-medium" style={{ color: "#23211a" }}>{item.carrier_name}</span> carried a line
-                    {item.source_author_name && <> · from <span style={{ color: "#5d7a4f" }}>{item.source_author_name}</span></>}
                   </div>
                   <div className="font-display italic mt-3" style={{ fontSize: "22px", color: "#3b372b", lineHeight: 1.45, borderLeft: "2px solid #c0683b", paddingLeft: "16px" }}>
                     "{item.line}"
                   </div>
-                  {item.source_piece_title && (
-                    <div className="mt-3" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", color: "#a89f8b" }}>
-                      — from "{item.source_piece_title}" · {formatTended(item._date).toUpperCase()}
-                    </div>
-                  )}
+                  <div className="mt-3" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", color: "#a89f8b" }}>
+                    {item.source_piece_title
+                      ? <>carried from <span style={{ color: "#5d7a4f", fontStyle: "italic" }}>"{item.source_piece_title}"</span>{item.source_author_name ? <> by <span style={{ color: "#5d7a4f" }}>{item.source_author_name}</span></> : ""} · {formatTended(item._date).toUpperCase()}</>
+                      : formatTended(item._date).toUpperCase()
+                    }
+                  </div>
                 </div>
               </div>
             );
