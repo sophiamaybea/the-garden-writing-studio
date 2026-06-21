@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import GardenIcon from "./GardenIcon";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
+import NotificationBell from "./NotificationBell";
 
 const navItems = [
   { label: "DASHBOARD", path: "/" },
@@ -73,12 +74,13 @@ export default function Sidebar() {
           >
             {initial}
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="text-[13px] font-semibold">{name}</div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: ".5px", color: "#9a917d", textTransform: "uppercase" }}>
               TENDING SINCE '23
             </div>
           </div>
+          <NotificationBell currentUser={user} />
         </div>
       </div>
     </aside>
