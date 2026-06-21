@@ -36,7 +36,7 @@ export default function Sidebar() {
         <div className="font-display text-xl font-medium" style={{ letterSpacing: ".2px", color: "#23402b" }}>The Garden</div>
       </div>
 
-      <nav className="flex flex-col gap-px mt-10">
+      <nav className="flex flex-col gap-px mt-10 overflow-y-auto" style={{ flex: "1 1 0", minHeight: 0 }}>
         {navItems.map((item) => {
           const active = location.pathname === item.path;
           return (
@@ -63,7 +63,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto flex flex-col gap-[18px]">
+      <div className="flex-none flex flex-col gap-[18px] pt-4">
         <svg width="100%" height="40" viewBox="0 0 196 40" fill="none" style={{ opacity: 0.45 }}>
           <path d="M4 36C40 36 38 10 64 12M64 12c-2-6 2-9 5-7s1 8-5 7Zm0 0c-5-3-9 0-8 4s9 1 8-4M110 36c2-16 10-18 36-26M146 10c-2-6 2-9 5-7s2 8-5 7Zm0 0c-6-2-10 1-8 5s9 0 8-5M192 36c-26-2-30-14-44-22" stroke="#5e7a4f" strokeWidth="1.3" strokeLinecap="round" />
         </svg>
