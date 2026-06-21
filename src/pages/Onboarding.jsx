@@ -479,79 +479,81 @@ export default function Onboarding() {
           </div>
         )}
 
-        {/* ── Step 3: First seed ── */}
+        {/* ── Step 3: The First Seed ── */}
         {step === 3 && (
-          <div className="flex flex-col gap-10" style={{ animation: "fadeUp .5s ease both" }}>
-            <div>
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "3px", color: "rgba(212,201,168,0.5)", textTransform: "uppercase", marginBottom: 20 }}>
-                One last thing
-              </div>
-              <h1 className="font-display font-normal" style={{ fontSize: "52px", color: "#f3ecd8", letterSpacing: "-.5px", lineHeight: 1.05, marginBottom: 16 }}>
-                Plant your<br />first seed.
-              </h1>
-              <p className="font-display italic" style={{ fontSize: "17px", color: "rgba(243,236,216,0.5)", lineHeight: 1.65 }}>
-                The garden is patient.<br />Begin when you're ready.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3">
+          <div className="flex flex-col items-center text-center gap-14" style={{ animation: "fadeIn 1s ease both" }}>
+            <h1 className="font-display font-normal" style={{ fontSize: "64px", color: "#f3ecd8", letterSpacing: "-.8px", lineHeight: 1.05, animation: "fadeIn 1.4s ease both" }}>
+              Your garden<br />is ready.
+            </h1>
+
+            <div className="grid gap-4 w-full" style={{ gridTemplateColumns: "1fr 1fr" }}>
+              {/* Start writing */}
               <button
                 type="button"
                 disabled={saving}
                 onClick={() => { trackStep(3); finishOnboarding("/write/new"); }}
-                className="text-left rounded-2xl cursor-pointer border-none transition-all disabled:opacity-40"
+                className="flex flex-col items-start rounded-2xl cursor-pointer border-none transition-all duration-300 disabled:opacity-40"
                 style={{
-                  background: "rgba(243,236,216,0.1)",
-                  border: "1px solid rgba(243,236,216,0.25)",
-                  padding: "28px 30px",
+                  background: "#1e3d2a",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  padding: "36px 28px",
+                  textAlign: "left",
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(243,236,216,0.16)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(243,236,216,0.1)"; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "#234831"; e.currentTarget.style.boxShadow = "0 0 32px rgba(60,120,70,0.35)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "#1e3d2a"; e.currentTarget.style.boxShadow = "none"; }}
               >
-                <div className="font-display italic" style={{ fontSize: "26px", color: "#f3ecd8", lineHeight: 1.2, marginBottom: 8 }}>🌱 Begin writing now</div>
-                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "1px", color: "rgba(243,236,216,0.4)" }}>
-                  Open a blank page and plant something
-                </div>
+                <span style={{ fontSize: "28px", marginBottom: 16 }}>🌱</span>
+                <div className="font-display font-normal" style={{ fontSize: "22px", color: "#f3ecd8", lineHeight: 1.2, marginBottom: 10 }}>Start writing now</div>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.5px", color: "rgba(243,236,216,0.4)", lineHeight: 1.5 }}>Plant your first piece today</div>
               </button>
+
+              {/* Explore */}
               <button
                 type="button"
                 disabled={saving}
                 onClick={() => { trackStep(3); finishOnboarding("/"); }}
-                className="text-left rounded-2xl cursor-pointer border-none transition-all disabled:opacity-40"
+                className="flex flex-col items-start rounded-2xl cursor-pointer border-none transition-all duration-300 disabled:opacity-40"
                 style={{
                   background: "transparent",
-                  border: "1px solid rgba(243,236,216,0.1)",
-                  padding: "28px 30px",
+                  border: "1px solid rgba(243,236,216,0.14)",
+                  padding: "36px 28px",
+                  textAlign: "left",
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(243,236,216,0.05)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(243,236,216,0.05)"; e.currentTarget.style.boxShadow = "0 0 24px rgba(243,236,216,0.06)"; e.currentTarget.style.border = "1px solid rgba(243,236,216,0.25)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.border = "1px solid rgba(243,236,216,0.14)"; }}
               >
-                <div className="font-display italic" style={{ fontSize: "26px", color: "rgba(243,236,216,0.7)", lineHeight: 1.2, marginBottom: 8 }}>🌿 Walk through the garden first</div>
-                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "1px", color: "rgba(243,236,216,0.3)" }}>
-                  See what others are growing before you begin
-                </div>
+                <span style={{ fontSize: "28px", marginBottom: 16 }}>🧭</span>
+                <div className="font-display font-normal" style={{ fontSize: "22px", color: "rgba(243,236,216,0.75)", lineHeight: 1.2, marginBottom: 10 }}>Explore the Garden</div>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.5px", color: "rgba(243,236,216,0.3)", lineHeight: 1.5 }}>See what others are growing</div>
               </button>
             </div>
+
             {saving && (
-              <div className="text-center font-display italic" style={{ fontSize: "14px", color: "rgba(243,236,216,0.4)" }}>
+              <div className="font-display italic" style={{ fontSize: "14px", color: "rgba(243,236,216,0.4)" }}>
                 The garden is taking root…
               </div>
             )}
-            <div className="flex items-center justify-start">
-              <BackButton onClick={() => setStep((s) => s - 1)} />
-            </div>
+
+            <BackButton onClick={() => setStep((s) => s - 1)} />
           </div>
         )}
 
-        {/* Dot navigation */}
-        <div className="mt-14">
-          <StepDots step={step} />
-        </div>
+        {/* Dot navigation — hidden on last step */}
+        {step < 3 && (
+          <div className="mt-14">
+            <StepDots step={step} />
+          </div>
+        )}
       </div>
 
       <style>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(18px); }
           to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
         input::placeholder, textarea::placeholder { color: rgba(243,236,216,0.25) !important; }
       `}</style>
