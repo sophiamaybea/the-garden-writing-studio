@@ -27,8 +27,20 @@ export default function Sidebar() {
     queryFn: () => base44.auth.me(),
   });
 
-  const initial = user?.full_name?.charAt(0)?.toUpperCase() || "B";
+  const { data: profile } = useQuery({
+    queryKey: ["userProfile", user?.id],
+    queryFn: () => base44.entities.UserProfile.filter({ user_id: user.id }),
+    enabled: !!user?.id,
+    select: (data) => data?.[0],
+  });
+
+  const initial = user?.full_name?.charAt(0)?.toUpperCase() || "?";
   const name = user?.full_name || "Writer";
+  const tendingYear = profile?.tending_since
+    ? `'${String(profile.tending_since).slice(-2)}`
+    : user?.created_date
+    ? `'${new Date(user.created_date).getFullYear().toString().slice(-2)}`
+    : null;
 
   return (
     <aside className="w-[248px] flex-none flex flex-col py-8 px-[26px]" style={{ background: "#e7ddc6", borderRight: "1px solid rgba(40,40,31,.1)" }}>
@@ -78,7 +90,7 @@ export default function Sidebar() {
           <div className="min-w-0 flex-1">
             <div className="text-[13px] font-semibold hover:text-[#23402b] transition-colors">{name}</div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: ".5px", color: "#9a917d", textTransform: "uppercase" }}>
-              TENDING SINCE '23
+              {tendingYear ? `TENDING SINCE ${tendingYear}` : "THE GARDEN"}
             </div>
           </div>
           <NotificationBell currentUser={user} />

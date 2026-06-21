@@ -16,6 +16,11 @@ export default function Dashboard() {
     setActiveStage((prev) => prev === stage ? null : stage);
     setTimeout(() => projectsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
   };
+  const { data: currentUser } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: () => base44.auth.me(),
+  });
+
   const { data: pieces = [] } = useQuery({
     queryKey: ["pieces"],
     queryFn: () => base44.entities.WritingPiece.list("-updated_date"),
@@ -50,8 +55,13 @@ export default function Dashboard() {
       <div className="max-w-[1180px] mx-auto" style={{ padding: "44px 52px 72px" }}>
         {/* Toolbar */}
         <div className="flex justify-between items-center flex-wrap gap-4">
-          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2px", color: "#8a836f" }}>
-            {getDayLabel()} · DAY {dayNumber}
+          <div>
+            <div className="font-display italic" style={{ fontSize: "22px", color: "#23211a", lineHeight: 1.2 }}>
+              {getDayLabel()}, {currentUser?.full_name?.split(" ")[0] || "writer"}.
+            </div>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "2px", color: "#9a917d", marginTop: 2 }}>
+              DAY {dayNumber}
+            </div>
           </div>
           <div className="flex gap-[10px]">
             <button

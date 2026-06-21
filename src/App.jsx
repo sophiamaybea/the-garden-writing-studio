@@ -35,22 +35,22 @@ import Onboarding from '@/pages/Onboarding';
 const OnboardingGuard = ({ children }) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated || location.pathname === "/onboarding") { setChecked(true); return; }
-    base44.auth.me().then((user) =>
-      base44.entities.UserProfile.filter({ user_id: user.id }).then((profiles) => {
+    if (!isAuthenticated) { setChecked(true); return; }
+    base44.auth.me()
+      .then((user) => base44.entities.UserProfile.filter({ user_id: user.id }))
+      .then((profiles) => {
         if (!profiles?.length || !profiles[0]?.onboarded) {
           navigate("/onboarding", { replace: true });
         }
         setChecked(true);
       })
-    ).catch(() => setChecked(true));
-  }, [isAuthenticated, location.pathname]);
+      .catch(() => setChecked(true));
+  }, [isAuthenticated]);
 
-  if (!checked && isAuthenticated && location.pathname !== "/onboarding") return null;
+  if (!checked && isAuthenticated) return null;
   return children;
 };
 
@@ -81,6 +81,7 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route element={<OnboardingGuard><Layout /></OnboardingGuard>}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/projects" element={<Projects />} />
@@ -98,7 +99,6 @@ const AuthenticatedApp = () => {
           <Route path="/friends" element={<Friends />} />
           <Route path="/writer/:id" element={<WriterProfile />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/onboarding" element={<Onboarding />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
