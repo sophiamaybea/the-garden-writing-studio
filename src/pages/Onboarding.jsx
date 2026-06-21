@@ -269,38 +269,39 @@ export default function Onboarding() {
       {/* Content */}
       <div className="w-full max-w-[540px] px-8 flex flex-col" style={{ minHeight: "100vh", justifyContent: "center", gap: 0 }}>
 
-        {/* ── Step 0: Enter ── */}
+        {/* ── Step 0: The Arrival ── */}
         {step === 0 && (
-          <div className="flex flex-col gap-10" style={{ animation: "fadeUp .5s ease both" }}>
-            <div>
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "3px", color: "rgba(212,201,168,0.5)", textTransform: "uppercase", marginBottom: 20 }}>
-                A new garden begins
-              </div>
-              <h1 className="font-display font-normal" style={{ fontSize: "52px", color: "#f3ecd8", letterSpacing: "-.5px", lineHeight: 1.05, marginBottom: 16 }}>
-                What do we<br />call you here?
+          <div className="flex flex-col items-center text-center gap-12" style={{ animation: "fadeUp .6s ease both" }}>
+            <div className="flex flex-col gap-5">
+              <h1 className="font-display font-normal" style={{ fontSize: "58px", color: "#f3ecd8", letterSpacing: "-.6px", lineHeight: 1.05 }}>
+                The Garden<br />is growing.
               </h1>
-              <p className="font-display italic" style={{ fontSize: "17px", color: "rgba(243,236,216,0.5)", lineHeight: 1.65 }}>
-                A name. A pen name. Whatever name<br />you write under when no one's watching.
+              <p className="font-display italic" style={{ fontSize: "19px", color: "rgba(243,236,216,0.45)", lineHeight: 1.7 }}>
+                Tell us your name so we can<br />tend a space for you.
               </p>
             </div>
-            <div className="flex flex-col gap-8">
-              <div>
-                <GhostInput value={penName} onChange={(e) => setPenName(e.target.value)} placeholder="Your name…" autoFocus />
-              </div>
-              <div>
-                <FieldLabel>A few words about your writing <span style={{ opacity: 0.4 }}>(optional)</span></FieldLabel>
-                <GhostTextarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="What you write about, what you're looking for…" />
-              </div>
-              <div>
-                <FieldLabel>When did you start writing? <span style={{ opacity: 0.4 }}>(optional)</span></FieldLabel>
-                <GhostInput value={startYear} onChange={(e) => setStartYear(e.target.value)} placeholder="e.g. 2014" type="number" min="1900" max={new Date().getFullYear()} />
-              </div>
+            <div className="w-full max-w-[380px]">
+              <input
+                type="text"
+                value={penName}
+                onChange={(e) => setPenName(e.target.value)}
+                placeholder="What do you go by?"
+                autoFocus
+                className="w-full bg-transparent border-none outline-none font-display text-center"
+                style={{
+                  fontSize: "28px",
+                  color: "#f3ecd8",
+                  borderBottom: "1px solid rgba(243,236,216,0.2)",
+                  paddingBottom: 14,
+                  lineHeight: 1.5,
+                  caretColor: "#d4b896",
+                }}
+                onKeyDown={(e) => { if (e.key === "Enter" && canNext()) advance(); }}
+              />
             </div>
-            <div className="flex items-center justify-end pt-2">
-              <ContinueButton onClick={advance} disabled={!canNext()}>
-                Step inside →
-              </ContinueButton>
-            </div>
+            <ContinueButton onClick={advance} disabled={!canNext()}>
+              Enter the Garden →
+            </ContinueButton>
           </div>
         )}
 
