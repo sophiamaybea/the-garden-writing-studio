@@ -26,6 +26,22 @@
     "days_active": {
       "type": "number",
       "default": 0
+    },
+    "writing_forms": {
+      "type": "string"
+    },
+    "practice_level": {
+      "type": "string"
+    },
+    "sharing_preference": {
+      "type": "string"
+    },
+    "goals": {
+      "type": "string"
+    },
+    "onboarded": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

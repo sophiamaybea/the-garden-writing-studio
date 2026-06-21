@@ -1,9 +1,11 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { useEffect, useState } from 'react';
+import { base44 } from '@/api/base44Client';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -28,6 +30,29 @@ import Friends from '@/pages/Friends';
 import RoomDetail from '@/pages/RoomDetail';
 import WriterProfile from '@/pages/WriterProfile';
 import Profile from '@/pages/Profile';
+import Onboarding from '@/pages/Onboarding';
+
+const OnboardingGuard = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated || location.pathname === "/onboarding") { setChecked(true); return; }
+    base44.auth.me().then((user) =>
+      base44.entities.UserProfile.filter({ user_id: user.id }).then((profiles) => {
+        if (!profiles?.length || !profiles[0]?.onboarded) {
+          navigate("/onboarding", { replace: true });
+        }
+        setChecked(true);
+      })
+    ).catch(() => setChecked(true));
+  }, [isAuthenticated, location.pathname]);
+
+  if (!checked && isAuthenticated && location.pathname !== "/onboarding") return null;
+  return children;
+};
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -56,7 +81,7 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route element={<Layout />}>
+        <Route element={<OnboardingGuard><Layout /></OnboardingGuard>}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/write/:id" element={<WriteEditor />} />
@@ -73,6 +98,7 @@ const AuthenticatedApp = () => {
           <Route path="/friends" element={<Friends />} />
           <Route path="/writer/:id" element={<WriterProfile />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/onboarding" element={<Onboarding />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
