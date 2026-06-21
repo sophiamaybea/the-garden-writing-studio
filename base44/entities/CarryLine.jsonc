@@ -1,0 +1,32 @@
+{
+  "name": "CarryLine",
+  "type": "object",
+  "properties": {
+    "line": {
+      "type": "string"
+    },
+    "source_piece_id": {
+      "type": "string"
+    },
+    "source_piece_title": {
+      "type": "string"
+    },
+    "source_author_id": {
+      "type": "string"
+    },
+    "source_author_name": {
+      "type": "string"
+    },
+    "carrier_id": {
+      "type": "string"
+    },
+    "carrier_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "line",
+    "source_author_id",
+    "carrier_id"
+  ]
+}

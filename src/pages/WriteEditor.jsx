@@ -7,6 +7,7 @@ import StageMark from "@/components/garden/StageMark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Maximize2, Minimize2 } from "lucide-react";
 import MarginAnnotations from "@/components/garden/MarginAnnotations";
+import SitWithButton from "@/components/garden/SitWithButton";
 
 export default function WriteEditor() {
   const { id } = useParams();
@@ -82,6 +83,12 @@ export default function WriteEditor() {
     setSaving(false);
     navigate("/projects");
   }, [title, content, form, stage, excerpt, wordCount, isNew, id, navigate, queryClient]);
+
+  const { data: sitWiths = [] } = useQuery({
+    queryKey: ["sitwith", id],
+    queryFn: () => base44.entities.SitWith.filter({ piece_id: id }),
+    enabled: !isNew,
+  });
 
   const meta = STAGE_META[stage];
   const pieceId = isNew ? null : id;
@@ -176,8 +183,18 @@ export default function WriteEditor() {
             </SelectContent>
           </Select>
         </div>
-        <div className="ml-auto" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10.5px", color: "#9a917d" }}>
-          {wordCount} WORDS
+        <div className="ml-auto flex items-center gap-4">
+          {!isNew && isOwner && sitWiths.length > 0 && (
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10.5px", color: "#c0683b" }}>
+              ♥ {sitWiths.length} sitting with this
+            </div>
+          )}
+          {!isNew && !isOwner && currentUser && (
+            <SitWithButton pieceId={id} pieceTitle={title} authorId={piece?.[0]?.created_by_id} currentUser={currentUser} />
+          )}
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10.5px", color: "#9a917d" }}>
+            {wordCount} WORDS
+          </div>
         </div>
       </div>
 

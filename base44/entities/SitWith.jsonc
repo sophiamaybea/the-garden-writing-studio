@@ -1,0 +1,25 @@
+{
+  "name": "SitWith",
+  "type": "object",
+  "properties": {
+    "piece_id": {
+      "type": "string"
+    },
+    "piece_title": {
+      "type": "string"
+    },
+    "piece_author_id": {
+      "type": "string"
+    },
+    "reader_id": {
+      "type": "string"
+    },
+    "reader_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "piece_id",
+    "reader_id"
+  ]
+}
