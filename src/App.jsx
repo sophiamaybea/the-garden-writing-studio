@@ -23,6 +23,7 @@ import Archive from '@/pages/Archive';
 import Writers from '@/pages/Writers';
 import Boards from '@/pages/Boards';
 import BoardView from '@/pages/BoardView';
+import PublicBoards from '@/pages/PublicBoards';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
           <Route path="/writers" element={<Writers />} />
           <Route path="/boards" element={<Boards />} />
           <Route path="/boards/:id" element={<BoardView />} />
+          <Route path="/open-studios" element={<PublicBoards />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

@@ -5,12 +5,19 @@ import { base44 } from "@/api/base44Client";
 import { Plus, Lock, Globe } from "lucide-react";
 import AddBlockModal from "@/components/garden/AddBlockModal";
 import BlockTile from "@/components/garden/BlockTile";
+import RecycleBlockModal from "@/components/garden/RecycleBlockModal";
 
 export default function BoardView() {
   const { id } = useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
+  const [recyclingBlock, setRecyclingBlock] = useState(null);
+
+  const { data: currentUser } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: () => base44.auth.me(),
+  });
 
   const { data: boardList = [] } = useQuery({
     queryKey: ["board", id],
@@ -86,7 +93,7 @@ export default function BoardView() {
         <div style={{ columns: "3 280px", columnGap: "14px" }}>
           {blocks.map((block) => (
             <div key={block.id} style={{ breakInside: "avoid", marginBottom: "14px" }}>
-              <BlockTile block={block} onDelete={() => deleteBlock.mutate(block.id)} />
+              <BlockTile block={block} onDelete={() => deleteBlock.mutate(block.id)} onRecycle={() => setRecyclingBlock(block)} />
             </div>
           ))}
         </div>
@@ -97,6 +104,13 @@ export default function BoardView() {
           boardId={id}
           onClose={() => setShowAdd(false)}
           onSaved={() => { qc.invalidateQueries({ queryKey: ["blocks", id] }); setShowAdd(false); }}
+        />
+      )}
+      {recyclingBlock && (
+        <RecycleBlockModal
+          block={recyclingBlock}
+          currentUser={currentUser}
+          onClose={() => setRecyclingBlock(null)}
         />
       )}
     </div>

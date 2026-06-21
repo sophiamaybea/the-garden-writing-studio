@@ -9,6 +9,7 @@ const navItems = [
   { label: "MY PROJECTS", path: "/projects" },
   { label: "STUDIO WALL", path: "/studio-wall" },
   { label: "BOARDS", path: "/boards" },
+  { label: "OPEN STUDIOS", path: "/open-studios" },
   { label: "WRITERS", path: "/writers" },
   { label: "FEED", path: "/feed" },
   { label: "WORKSHOP ROOMS", path: "/rooms" },

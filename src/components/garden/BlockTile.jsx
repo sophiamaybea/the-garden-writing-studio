@@ -9,7 +9,7 @@ const TYPE_COLORS = {
   music: "#ede5d2",
 };
 
-export default function BlockTile({ block, onDelete }) {
+export default function BlockTile({ block, onDelete, onRecycle }) {
   const [hover, setHover] = useState(false);
 
   return (
@@ -20,13 +20,26 @@ export default function BlockTile({ block, onDelete }) {
       onMouseLeave={() => setHover(false)}
     >
       {hover && (
-        <button
-          onClick={onDelete}
-          className="absolute top-2 right-2 z-10 rounded-full flex items-center justify-center cursor-pointer border-none transition-opacity"
-          style={{ background: "rgba(35,33,26,.55)", width: 26, height: 26, color: "#f3ecd8" }}
-        >
-          <X size={13} />
-        </button>
+        <div className="absolute top-2 right-2 z-10 flex gap-1">
+          {onRecycle && (
+            <button
+              onClick={onRecycle}
+              className="rounded-full flex items-center justify-center cursor-pointer border-none"
+              style={{ background: "#23402b", padding: "5px 8px", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", letterSpacing: "1px", textTransform: "uppercase" }}
+            >
+              ↻
+            </button>
+          )}
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              className="rounded-full flex items-center justify-center cursor-pointer border-none"
+              style={{ background: "rgba(35,33,26,.55)", width: 26, height: 26, color: "#f3ecd8" }}
+            >
+              <X size={13} />
+            </button>
+          )}
+        </div>
       )}
 
       {/* Image */}
