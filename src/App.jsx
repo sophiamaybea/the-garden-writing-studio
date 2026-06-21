@@ -27,6 +27,7 @@ import PublicBoards from '@/pages/PublicBoards';
 import Friends from '@/pages/Friends';
 import RoomDetail from '@/pages/RoomDetail';
 import WriterProfile from '@/pages/WriterProfile';
+import Profile from '@/pages/Profile';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -71,6 +72,7 @@ const AuthenticatedApp = () => {
           <Route path="/open-studios" element={<PublicBoards />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/writer/:id" element={<WriterProfile />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />

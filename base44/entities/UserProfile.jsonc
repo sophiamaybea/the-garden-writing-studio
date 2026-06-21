@@ -1,0 +1,34 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "tending_since": {
+      "type": "string"
+    },
+    "drafts_written": {
+      "type": "number",
+      "default": 0
+    },
+    "words_deleted": {
+      "type": "number",
+      "default": 0
+    },
+    "time_in_garden_hours": {
+      "type": "number",
+      "default": 0
+    },
+    "days_active": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "user_id"
+  ]
+}

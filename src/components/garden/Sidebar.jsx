@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import GardenIcon from "./GardenIcon";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +21,7 @@ const navItems = [
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
     queryFn: () => base44.auth.me(),
@@ -67,7 +68,7 @@ export default function Sidebar() {
         <svg width="100%" height="40" viewBox="0 0 196 40" fill="none" style={{ opacity: 0.45 }}>
           <path d="M4 36C40 36 38 10 64 12M64 12c-2-6 2-9 5-7s1 8-5 7Zm0 0c-5-3-9 0-8 4s9 1 8-4M110 36c2-16 10-18 36-26M146 10c-2-6 2-9 5-7s2 8-5 7Zm0 0c-6-2-10 1-8 5s9 0 8-5M192 36c-26-2-30-14-44-22" stroke="#5e7a4f" strokeWidth="1.3" strokeLinecap="round" />
         </svg>
-        <div className="flex items-center gap-[11px]">
+        <div className="flex items-center gap-[11px] cursor-pointer" onClick={() => navigate("/profile")}>
           <div
             className="w-[34px] h-[34px] flex-none rounded-full flex items-center justify-center font-display text-base"
             style={{ background: "#23402b", color: "#efe7d3" }}
@@ -75,7 +76,7 @@ export default function Sidebar() {
             {initial}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-[13px] font-semibold">{name}</div>
+            <div className="text-[13px] font-semibold hover:text-[#23402b] transition-colors">{name}</div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: ".5px", color: "#9a917d", textTransform: "uppercase" }}>
               TENDING SINCE '23
             </div>
