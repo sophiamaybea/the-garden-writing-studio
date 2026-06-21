@@ -25,6 +25,16 @@
       ],
       "default": "seedling"
     },
+    "exposure": {
+      "type": "string",
+      "enum": [
+        "private",
+        "inner_circle",
+        "open_studio",
+        "published"
+      ],
+      "default": "private"
+    },
     "excerpt": {
       "type": "string"
     },
