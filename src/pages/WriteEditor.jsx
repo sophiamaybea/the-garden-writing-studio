@@ -6,6 +6,7 @@ import { STAGE_META, getFormLabel, formatTended } from "@/lib/gardenUtils";
 import StageMark from "@/components/garden/StageMark";
 import { PanelRight, PanelRightClose, Maximize2, Minimize2 } from "lucide-react";
 import AnnotationPanel from "@/components/garden/AnnotationPanel";
+import CarryModal from "@/components/garden/CarryModal";
 
 const STAGES = ["seedling", "growing", "bloom", "resting"];
 const STAGE_COLORS = {
@@ -40,6 +41,10 @@ export default function WriteEditor() {
   const [showPanel, setShowPanel]   = useState(false);
   const [showStageMenu, setShowStageMenu]     = useState(false);
   const [showExposureMenu, setShowExposureMenu] = useState(false);
+  const [carrySelection, setCarrySelection] = useState(null); // { text, x, y }
+  const [showCarryModal, setShowCarryModal] = useState(false);
+  const [carryLine, setCarryLine] = useState("");
+  const canvasRef = useRef(null);
   const stageRef    = useRef(null);
   const exposureRef = useRef(null);
 
@@ -239,7 +244,48 @@ export default function WriteEditor() {
       {/* Body */}
       <div className="flex flex-1 overflow-hidden">
         {/* Writing canvas */}
-        <div className="flex-1 overflow-y-auto" style={{ padding: "64px 72px 120px" }}>
+        <div
+          className="flex-1 overflow-y-auto relative"
+          style={{ padding: "64px 72px 120px" }}
+          ref={canvasRef}
+          onMouseUp={() => {
+            const sel = window.getSelection();
+            const text = sel?.toString().trim();
+            if (text && text.length > 3) {
+              const range = sel.getRangeAt(0);
+              const rect = range.getBoundingClientRect();
+              const parentRect = canvasRef.current.getBoundingClientRect();
+              setCarrySelection({
+                text,
+                x: rect.left + rect.width / 2 - parentRect.left,
+                y: rect.top - parentRect.top - 48,
+              });
+            } else {
+              setCarrySelection(null);
+            }
+          }}
+        >
+          {/* Floating carry button */}
+          {carrySelection && !isNew && (
+            <div
+              className="absolute z-20 pointer-events-auto"
+              style={{ left: carrySelection.x, top: carrySelection.y, transform: "translateX(-50%)" }}
+            >
+              <button
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  setCarryLine(carrySelection.text);
+                  setShowCarryModal(true);
+                  setCarrySelection(null);
+                  window.getSelection()?.removeAllRanges();
+                }}
+                className="flex items-center gap-1 rounded-full border-none cursor-pointer shadow-lg hover:bg-[#193020] transition-colors"
+                style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "1px", textTransform: "uppercase", padding: "6px 14px", whiteSpace: "nowrap" }}
+              >
+                ✦ Carry this line
+              </button>
+            </div>
+          )}
           <div style={{ maxWidth: "680px", margin: "0 auto" }}>
             {/* Title */}
             <input
@@ -269,7 +315,7 @@ export default function WriteEditor() {
               onInput={(e) => { e.target.style.height = "auto"; e.target.style.height = e.target.scrollHeight + "px"; }}
             />
           </div>
-        </div>
+        </div>{/* end canvas scroll */}
 
         {/* Annotation panel */}
         {showPanel && !isNew && (
@@ -286,6 +332,16 @@ export default function WriteEditor() {
           </div>
         )}
       </div>
+
+      {showCarryModal && !isNew && (
+        <CarryModal
+          piece={{ id, title, created_by_id: piece?.[0]?.created_by_id }}
+          currentUser={currentUser}
+          initialLine={carryLine}
+          onClose={() => setShowCarryModal(false)}
+          onSaved={() => setShowCarryModal(false)}
+        />
+      )}
 
       {/* Bottom bar: word count + read by */}
       <div

@@ -3,8 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { X } from "lucide-react";
 
-export default function CarryModal({ piece, currentUser, onClose, onSaved }) {
-  const [line, setLine] = useState("");
+export default function CarryModal({ piece, currentUser, onClose, onSaved, initialLine = "" }) {
+  const [line, setLine] = useState(initialLine);
 
   const carry = useMutation({
     mutationFn: () =>
