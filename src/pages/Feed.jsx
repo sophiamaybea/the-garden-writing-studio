@@ -86,7 +86,7 @@ export default function Feed() {
                     {getInitial(authorName)}
                   </div>
                   <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "1px", color: "#9a917d", textTransform: "uppercase" }}>
-                    <span style={{ color: "#23211a", fontWeight: 500 }}>{authorName}</span>
+                    <a href={`/writer/${item.created_by_id}`} className="no-underline hover:underline" style={{ color: "#23211a", fontWeight: 500 }}>{authorName}</a>
                     {" · "}
                     {formLabel[item.form] || item.form}
                     {" · "}

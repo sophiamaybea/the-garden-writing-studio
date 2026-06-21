@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import { useNavigate } from "react-router-dom";
 
 const avatarColors = ["#6f8a5a", "#c0683b", "#23402b", "#9a7d4f", "#5e7a4f", "#a08b5e"];
 
 export default function Writers() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   const { data: currentUser } = useQuery({
@@ -69,10 +71,10 @@ export default function Writers() {
         >
           {initial}
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="font-semibold text-[14px]" style={{ color: "#23211a" }}>{writer.full_name || "Anonymous"}</div>
+        <div className="flex-1 min-w-0 cursor-pointer" onClick={() => navigate(`/writer/${writer.id}`)}>
+          <div className="font-semibold text-[14px] hover:text-[#23402b] transition-colors" style={{ color: "#23211a" }}>{writer.full_name || "Anonymous"}</div>
           <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: ".5px", color: "#9a917d", textTransform: "uppercase" }}>
-            WRITER
+            View studio →
           </div>
         </div>
         <button
