@@ -5,12 +5,12 @@ import { base44 } from "@/api/base44Client";
 import GardenIcon from "@/components/garden/GardenIcon";
 
 // ─── constants ────────────────────────────────────────────────────────────────
-const WRITING_FORMS = ["Poetry", "Essays", "Fiction", "Creative Nonfiction", "Hybrid Forms", "Notes & Fragments", "Screenwriting", "Other"];
+const WRITING_FORMS = ["Poetry", "Essays", "Fiction", "Creative Nonfiction", "Memoir", "Scripts", "Experimental"];
 const PRACTICE_LEVELS = [
-  { value: "Just beginning",        label: "Just beginning",        sub: "I'm finding my way in" },
-  { value: "Returning to writing",  label: "Returning to writing",  sub: "Coming back after a while away" },
-  { value: "Actively writing",      label: "Actively writing",      sub: "I write regularly" },
-  { value: "Writing is my work",    label: "Writing is my work",    sub: "It's how I move through the world" },
+  { value: "Planting seeds",           label: "Planting seeds" },
+  { value: "In full bloom",            label: "In full bloom" },
+  { value: "Tending through doubt",    label: "Tending through doubt" },
+  { value: "Returning after a break",  label: "Returning after a break" },
 ];
 const SHARING_OPTIONS = [
   { value: "private",      label: "Privately",      desc: "Just for me, for now" },
@@ -305,42 +305,81 @@ export default function Onboarding() {
           </div>
         )}
 
-        {/* ── Step 1: Writing identity ── */}
+        {/* ── Step 1: The Work ── */}
         {step === 1 && (
-          <div className="flex flex-col gap-10" style={{ animation: "fadeUp .5s ease both" }}>
+          <div className="flex flex-col gap-12" style={{ animation: "fadeUp .5s ease both" }}>
             <div>
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "3px", color: "rgba(212,201,168,0.5)", textTransform: "uppercase", marginBottom: 20 }}>
-                Your writing
-              </div>
-              <h1 className="font-display font-normal" style={{ fontSize: "52px", color: "#f3ecd8", letterSpacing: "-.5px", lineHeight: 1.05, marginBottom: 16 }}>
-                What grows<br />in your garden?
+              <h1 className="font-display font-normal" style={{ fontSize: "54px", color: "#f3ecd8", letterSpacing: "-.5px", lineHeight: 1.05, marginBottom: 14 }}>
+                What grows here?
               </h1>
-              <p className="font-display italic" style={{ fontSize: "17px", color: "rgba(243,236,216,0.5)", lineHeight: 1.65 }}>
-                Select every form that feels like yours —<br />there's no wrong answer.
+              <p className="font-display italic" style={{ fontSize: "18px", color: "rgba(243,236,216,0.45)", lineHeight: 1.65 }}>
+                Pick everything that feels like yours.
               </p>
             </div>
-            <div className="flex flex-col gap-8">
-              <div>
-                <FieldLabel>Forms</FieldLabel>
-                <div className="flex flex-wrap gap-2">
-                  {WRITING_FORMS.map((f) => (
-                    <FormChip key={f} label={f} selected={forms.includes(f)} onClick={() => toggle(forms, setForms, f)} />
-                  ))}
-                </div>
+
+            <div className="flex flex-wrap gap-[10px]">
+              {WRITING_FORMS.map((f) => {
+                const sel = forms.includes(f);
+                return (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => toggle(forms, setForms, f)}
+                    className="rounded-full cursor-pointer border-none transition-all duration-200"
+                    style={{
+                      background: sel ? "rgba(193,104,59,0.15)" : "rgba(243,236,216,0.06)",
+                      color: sel ? "#f3ecd8" : "rgba(243,236,216,0.5)",
+                      border: sel ? "1.5px solid rgba(193,104,59,0.8)" : "1.5px solid rgba(243,236,216,0.12)",
+                      boxShadow: sel ? "0 0 14px rgba(193,104,59,0.25)" : "none",
+                      fontFamily: "'Hanken Grotesk', sans-serif",
+                      fontSize: "14px",
+                      fontWeight: sel ? 600 : 400,
+                      letterSpacing: "0.2px",
+                      padding: "11px 22px",
+                    }}
+                  >
+                    {f}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "2.5px", color: "rgba(212,201,168,0.4)", textTransform: "uppercase" }}>
+                Where are you in the practice?
               </div>
-              <div>
-                <FieldLabel>Where you are right now</FieldLabel>
-                <div className="flex flex-col gap-2">
-                  {PRACTICE_LEVELS.map((l) => (
-                    <LevelPill key={l.value} label={l.label} sub={l.sub} selected={practiceLevel === l.value} onClick={() => setPracticeLevel(l.value)} />
-                  ))}
-                </div>
+              <div className="flex flex-wrap gap-[10px]">
+                {PRACTICE_LEVELS.map((l) => {
+                  const sel = practiceLevel === l.value;
+                  return (
+                    <button
+                      key={l.value}
+                      type="button"
+                      onClick={() => setPracticeLevel(l.value)}
+                      className="rounded-full cursor-pointer border-none transition-all duration-200"
+                      style={{
+                        background: sel ? "rgba(193,104,59,0.15)" : "rgba(243,236,216,0.06)",
+                        color: sel ? "#f3ecd8" : "rgba(243,236,216,0.5)",
+                        border: sel ? "1.5px solid rgba(193,104,59,0.8)" : "1.5px solid rgba(243,236,216,0.12)",
+                        boxShadow: sel ? "0 0 14px rgba(193,104,59,0.25)" : "none",
+                        fontFamily: "'Hanken Grotesk', sans-serif",
+                        fontSize: "14px",
+                        fontWeight: sel ? 600 : 400,
+                        letterSpacing: "0.2px",
+                        padding: "11px 22px",
+                      }}
+                    >
+                      {l.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
+
             <div className="flex items-center justify-between pt-2">
               <BackButton onClick={() => setStep((s) => s - 1)} />
               <ContinueButton onClick={advance} disabled={!canNext()}>
-                This is my work →
+                That's my work →
               </ContinueButton>
             </div>
           </div>
