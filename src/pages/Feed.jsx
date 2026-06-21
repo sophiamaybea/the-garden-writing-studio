@@ -1,10 +1,118 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { formatTended } from "@/lib/gardenUtils";
 import { Link } from "react-router-dom";
 import CarryModal from "@/components/garden/CarryModal";
 import SitWithButton from "@/components/garden/SitWithButton";
+
+const LIVE_ROOMS = [
+  {
+    id: "r1",
+    writer: "Maren Solberg",
+    stage: "growing",
+    form: "poem",
+    title: "The light that stays after the bird has gone",
+    excerpt: "I have been collecting your silences like stones — \neach one smooth and particular in the palm.",
+    baseWords: 843,
+    readers: 4,
+  },
+  {
+    id: "r2",
+    writer: "Theo Ashby",
+    stage: "seedling",
+    form: "essay",
+    title: "On returning to rooms you've grieved in",
+    excerpt: "There is a particular cruelty to furniture — how it holds the shape of a life, indifferent to whether you still want it.",
+    baseWords: 312,
+    readers: 2,
+  },
+  {
+    id: "r3",
+    writer: "Isla Vane",
+    stage: "growing",
+    form: "story",
+    title: "Small animals, late winter",
+    excerpt: "She left the door open on purpose. She was done with closed things.",
+    baseWords: 1207,
+    readers: 6,
+  },
+];
+
+const STAGE_COLOR = { seedling: "#6f8a5a", growing: "#5e7a4f", bloom: "#c0683b", resting: "#a08b5e" };
+const STAGE_LABEL = { seedling: "🌱 Seedling", growing: "🌿 Growing", bloom: "🌸 Bloom", resting: "🍂 Resting" };
+const avatarColors2 = ["#6f8a5a", "#c0683b", "#23402b", "#9a7d4f", "#5e7a4f", "#a08b5e"];
+
+function useTickingWords(base, rate = 1) {
+  const [words, setWords] = useState(base);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (Math.random() < 0.35) setWords((w) => w + Math.floor(Math.random() * 4 + 1));
+    }, rate * 1000);
+    return () => clearInterval(interval);
+  }, [base, rate]);
+  return words;
+}
+
+function LiveRoomCard({ room }) {
+  const words = useTickingWords(room.baseWords, 3 + Math.random() * 4);
+  const initial = room.writer.charAt(0).toUpperCase();
+  const color = avatarColors2[room.writer.charCodeAt(0) % avatarColors2.length];
+
+  return (
+    <div
+      className="rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden"
+      style={{ background: "#ede6d4", border: "1px solid rgba(40,40,31,.13)" }}
+    >
+      {/* Live pulse */}
+      <div className="absolute top-5 right-5 flex items-center gap-[6px]">
+        <span className="w-[7px] h-[7px] rounded-full animate-pulse" style={{ background: "#6f8a5a" }} />
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", letterSpacing: "1.5px", color: "#6f8a5a", textTransform: "uppercase" }}>Live</span>
+      </div>
+
+      {/* Writer row */}
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full flex-none flex items-center justify-center font-display text-base" style={{ background: color, color: "#efe7d3" }}>
+          {initial}
+        </div>
+        <div>
+          <div className="font-semibold text-[14px]" style={{ color: "#23211a" }}>{room.writer}</div>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", letterSpacing: "1px", color: STAGE_COLOR[room.stage], textTransform: "uppercase" }}>
+            {STAGE_LABEL[room.stage]} · {room.form}
+          </div>
+        </div>
+      </div>
+
+      {/* Piece title */}
+      <div className="font-display font-normal" style={{ fontSize: "21px", color: "#23211a", lineHeight: 1.2, letterSpacing: "-.2px" }}>
+        {room.title}
+      </div>
+
+      {/* Excerpt */}
+      <div className="font-display italic" style={{ fontSize: "15px", color: "#6b6355", lineHeight: 1.65, whiteSpace: "pre-line" }}>
+        {room.excerpt}
+      </div>
+
+      {/* Footer */}
+      <div className="flex items-center justify-between mt-1">
+        <div className="flex items-center gap-4">
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: ".5px", color: "#a08b5e" }}>
+            {words.toLocaleString()} words
+          </div>
+          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: ".5px", color: "#9a917d" }}>
+            {room.readers} reading
+          </div>
+        </div>
+        <button
+          className="border-none cursor-pointer rounded-lg transition-colors hover:bg-[#193020]"
+          style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", fontWeight: 500, letterSpacing: "1.5px", textTransform: "uppercase", padding: "8px 16px" }}
+        >
+          Sit in →
+        </button>
+      </div>
+    </div>
+  );
+}
 
 const avatarColors = ["#6f8a5a", "#c0683b", "#23402b", "#9a7d4f", "#5e7a4f", "#a08b5e"];
 const formLabel = { poem: "Poem", essay: "Essay", story: "Story", notes: "Notes" };
@@ -66,8 +174,22 @@ export default function Feed() {
         Live work from writers you follow.
       </div>
 
+      {/* Live writing rooms */}
+      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2.5px", color: "#8a836f", marginBottom: 16 }}>
+        WRITING NOW
+      </div>
+      <div className="grid gap-4 mb-12" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}>
+        {LIVE_ROOMS.map((room) => <LiveRoomCard key={room.id} room={room} />)}
+      </div>
+
+      <div style={{ height: 1, background: "rgba(40,40,31,.1)", marginBottom: 36 }} />
+
+      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2.5px", color: "#8a836f", marginBottom: 16 }}>
+        FROM WRITERS YOU FOLLOW
+      </div>
+
       {feedItems.length === 0 && (
-        <div className="text-center py-20 font-display italic" style={{ color: "#8a836f", fontSize: "18px" }}>
+        <div className="py-12 font-display italic" style={{ color: "#8a836f", fontSize: "17px" }}>
           {followingIds.length === 0
             ? <>The feed stirs when you follow writers. <Link to="/writers" className="no-underline" style={{ color: "#5d7a4f" }}>Find some →</Link></>
             : "Nothing stirring yet. The garden is at rest."}
