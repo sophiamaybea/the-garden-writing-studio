@@ -3,9 +3,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import moment from "moment";
 import { Plus, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Rooms() {
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ title: "", date: "", time_label: "" });
 
@@ -132,11 +134,11 @@ export default function Rooms() {
                   </div>
                 </div>
                 <button
-                  onClick={() => joinRoom.mutate(r)}
+                  onClick={() => { joinRoom.mutate(r); navigate(`/rooms/${r.id}`); }}
                   className="flex-none cursor-pointer rounded-lg border-none transition-colors hover:bg-[#193020]"
                   style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "1px", textTransform: "uppercase", padding: "8px 14px" }}
                 >
-                  Join
+                  Join →
                 </button>
               </div>
             );

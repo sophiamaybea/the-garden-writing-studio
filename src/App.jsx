@@ -25,6 +25,7 @@ import Boards from '@/pages/Boards';
 import BoardView from '@/pages/BoardView';
 import PublicBoards from '@/pages/PublicBoards';
 import Friends from '@/pages/Friends';
+import RoomDetail from '@/pages/RoomDetail';
 import WriterProfile from '@/pages/WriterProfile';
 
 const AuthenticatedApp = () => {
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
           <Route path="/studio-wall" element={<StudioWall />} />
           <Route path="/feed" element={<Feed />} />
           <Route path="/rooms" element={<Rooms />} />
+          <Route path="/rooms/:id" element={<RoomDetail />} />
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="/archive" element={<Archive />} />
           <Route path="/writers" element={<Writers />} />
