@@ -1,18 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { Plus, Lock, Globe } from "lucide-react";
 import AddBlockModal from "@/components/garden/AddBlockModal";
 import BlockTile from "@/components/garden/BlockTile";
-import RecycleBlockModal from "@/components/garden/RecycleBlockModal";
 
 export default function BoardView() {
   const { id } = useParams();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
-  const [recyclingBlock, setRecyclingBlock] = useState(null);
 
   const { data: currentUser } = useQuery({
     queryKey: ["currentUser"],
@@ -40,6 +38,21 @@ export default function BoardView() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["board", id] }),
   });
 
+  const carryToWall = useMutation({
+    mutationFn: (block) => {
+      const excerpt = block.content
+        ? block.content.slice(0, 200)
+        : block.caption || block.url || "";
+      return base44.entities.StudioWallPost.create({
+        author_name: currentUser?.full_name || "A writer",
+        post_type: block.block_type === "quote" ? "fragment" : (block.block_type === "text" ? "notes" : "fragment"),
+        excerpt_line: excerpt,
+        reader_count: 0,
+      });
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["wallPosts"] }),
+  });
+
   if (!board && !isLoading) return null;
 
   return (
@@ -56,7 +69,9 @@ export default function BoardView() {
         <div>
           <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2.5px", color: "#a08b5e" }}>BOARD</div>
           <h1 className="font-display font-normal mt-1" style={{ fontSize: "42px", color: "#23211a" }}>{board?.title}</h1>
-          {board?.description && <div className="font-display italic mt-1" style={{ fontSize: "16px", color: "#8a836f" }}>{board.description}</div>}
+          {board?.description && (
+            <div className="font-display italic mt-1" style={{ fontSize: "16px", color: "#8a836f" }}>{board.description}</div>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -77,23 +92,26 @@ export default function BoardView() {
             className="flex items-center gap-2 border-none cursor-pointer rounded-lg hover:bg-[#193020] transition-colors"
             style={{ background: "#23402b", color: "#f3ecd8", fontFamily: "'IBM Plex Mono', monospace", fontSize: "11.5px", fontWeight: 500, letterSpacing: "1.5px", textTransform: "uppercase", padding: "13px 18px" }}
           >
-            <Plus size={14} /> Add block
+            <Plus size={14} /> Add item
           </button>
         </div>
       </div>
 
       <div style={{ height: "1px", background: "rgba(40,40,31,.12)", margin: "28px 0" }} />
 
-      {/* Masonry grid */}
       {blocks.length === 0 && !isLoading ? (
         <div className="text-center py-24 font-display italic" style={{ color: "#8a836f", fontSize: "20px" }}>
-          Nothing here yet — add your first block.
+          Nothing here yet — add your first item.
         </div>
       ) : (
-        <div style={{ columns: "3 280px", columnGap: "14px" }}>
+        <div style={{ columns: "3 260px", columnGap: "16px" }}>
           {blocks.map((block) => (
-            <div key={block.id} style={{ breakInside: "avoid", marginBottom: "14px" }}>
-              <BlockTile block={block} onDelete={() => deleteBlock.mutate(block.id)} onRecycle={() => setRecyclingBlock(block)} />
+            <div key={block.id} style={{ breakInside: "avoid", marginBottom: "16px" }}>
+              <BlockTile
+                block={block}
+                onDelete={() => deleteBlock.mutate(block.id)}
+                onCarryToWall={() => carryToWall.mutate(block)}
+              />
             </div>
           ))}
         </div>
@@ -104,13 +122,6 @@ export default function BoardView() {
           boardId={id}
           onClose={() => setShowAdd(false)}
           onSaved={() => { qc.invalidateQueries({ queryKey: ["blocks", id] }); setShowAdd(false); }}
-        />
-      )}
-      {recyclingBlock && (
-        <RecycleBlockModal
-          block={recyclingBlock}
-          currentUser={currentUser}
-          onClose={() => setRecyclingBlock(null)}
         />
       )}
     </div>
