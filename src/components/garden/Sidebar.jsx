@@ -12,6 +12,7 @@ const navItems = [
   { label: "BOARDS", path: "/boards" },
   { label: "OPEN STUDIOS", path: "/open-studios" },
   { label: "WRITERS", path: "/writers" },
+  { label: "PROMPT PACKS", path: "/prompt-packs" },
   { label: "FRIENDS", path: "/friends" },
   { label: "FEED", path: "/feed" },
   { label: "WORKSHOP ROOMS", path: "/rooms" },

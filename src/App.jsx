@@ -30,6 +30,9 @@ import RoomDetail from '@/pages/RoomDetail';
 import WriterProfile from '@/pages/WriterProfile';
 import Profile from '@/pages/Profile';
 import Onboarding from '@/pages/Onboarding';
+import PromptPacks from '@/pages/PromptPacks';
+import GardenPlot from '@/pages/prompt-packs/GardenPlot';
+import SensitivePen from '@/pages/prompt-packs/SensitivePen';
 
 const OnboardingGuard = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -97,6 +100,9 @@ const AuthenticatedApp = () => {
           <Route path="/friends" element={<Friends />} />
           <Route path="/writer/:id" element={<WriterProfile />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/prompt-packs" element={<PromptPacks />} />
+          <Route path="/prompt-packs/garden-plot" element={<GardenPlot />} />
+          <Route path="/prompt-packs/sensitive-pen" element={<SensitivePen />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
