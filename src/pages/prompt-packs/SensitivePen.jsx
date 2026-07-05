@@ -251,7 +251,7 @@ export default function SensitivePen() {
 
         {reading != null && saved[reading] && (
           <div onClick={() => setReading(null)} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,12,60,.74)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "32px" }}>
-            <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", maxWidth: "620px", width: "100%", maxHeight: "84vh", overflowY: "auto", background: bg, border: `1px solid ${line}`, borderRadius: "6px", padding: "46px 48px" }}>
+            <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", maxWidth: "620px", width: "100%", maxHeight: "84vh", overflowY: "auto", background: "rgba(42,45,180,0.82)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", border: `1px solid ${line}`, borderRadius: "8px", padding: "46px 48px", boxShadow: "0 24px 60px rgba(0,0,0,0.4)" }}>
               <button onClick={() => setReading(null)} style={{ position: "absolute", top: "16px", right: "18px", background: "transparent", border: "none", color: line, fontSize: "24px", cursor: "pointer", lineHeight: 1 }}>×</button>
               <div style={{ fontSize: "10px", letterSpacing: ".24em", textTransform: "uppercase", color: "rgba(255,255,255,.5)", marginBottom: "14px", display: "flex", gap: "12px", flexWrap: "wrap" }}><span>{saved[reading].cat}</span><span style={{ opacity: .6 }}>{saved[reading].date}</span></div>
               <div style={{ borderLeft: `2px solid ${line}`, paddingLeft: "16px", marginBottom: "24px" }}>
@@ -299,7 +299,7 @@ export default function SensitivePen() {
             <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
             {phase === "idle" && (
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <button onClick={doDraw} style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: "21px", padding: "13px 30px", borderRadius: "40px", border: `1px solid ${line}`, background: bg, color: line, cursor: "pointer", letterSpacing: ".01em" }}>Draw a prompt</button>
+                <button onClick={doDraw} style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: "21px", padding: "13px 30px", borderRadius: "40px", border: `1px solid ${line}`, background: "rgba(255,255,255,0.08)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", color: line, cursor: "pointer", letterSpacing: ".01em", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.15), 0 8px 24px rgba(0,0,0,0.2)" }}>Draw a prompt</button>
               </div>
             )}
           </div>
@@ -311,7 +311,7 @@ export default function SensitivePen() {
               <div>
                 <div style={{ fontSize: "11px", letterSpacing: ".32em", textTransform: "uppercase", color: "rgba(255,255,255,.5)", marginBottom: "8px" }}>{promptCat}</div>
                 <div style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontWeight: 500, fontSize: "30px", lineHeight: 1.12, marginBottom: "16px" }}>{promptTitle}</div>
-                <blockquote style={{ margin: 0, fontFamily: "'Newsreader', Georgia, serif", fontWeight: 400, fontSize: "25px", lineHeight: 1.4, letterSpacing: "-.005em", color: "rgba(255,255,255,.92)" }}>
+                <blockquote style={{ margin: 0, fontFamily: "'Newsreader', Georgia, serif", fontWeight: 400, fontSize: "25px", lineHeight: 1.4, letterSpacing: "-.005em", color: "rgba(255,255,255,0.92)", background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderRadius: "8px", padding: "18px 22px", border: "1px solid rgba(255,255,255,0.1)" }}>
                   {promptDisplay}<span style={{ display: "inline-block", width: ".5ch", animation: "blink 1s step-end infinite" }}>▌</span>
                 </blockquote>
 
@@ -321,7 +321,7 @@ export default function SensitivePen() {
                       <span style={{ fontSize: "15px" }}>☉</span> Hard to take in all at once? Break it into pieces
                     </button>
                   ) : (
-                    <div style={{ border: "1px solid rgba(255,255,255,.24)", borderRadius: "5px", padding: "20px 22px 24px", background: "rgba(255,255,255,.05)" }}>
+                    <div style={{ border: "1px solid rgba(255,255,255,0.2)", borderRadius: "8px", padding: "20px 22px 24px", background: "rgba(255,255,255,0.08)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.08)" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "12px", flexWrap: "wrap", marginBottom: "18px" }}>
                         <div style={{ fontSize: "10px", letterSpacing: ".22em", textTransform: "uppercase", color: "rgba(255,255,255,.55)" }}>One piece at a time</div>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -368,7 +368,7 @@ export default function SensitivePen() {
 
         {/* WRITING PANEL */}
         {phase === "writing" && (
-          <section style={{ marginTop: "46px", borderTop: "1px solid rgba(255,255,255,.22)", paddingTop: "34px" }}>
+          <section style={{ marginTop: "46px", background: "rgba(255,255,255,0.04)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", borderRadius: "12px", padding: "30px 34px", border: "1px solid rgba(255,255,255,0.12)", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.06)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", flexWrap: "wrap", gap: "12px", marginBottom: "20px" }}>
               <div style={{ maxWidth: "74%" }}>
                 <div style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontWeight: 500, fontSize: "19px", lineHeight: 1.15, marginBottom: "5px" }}>{promptTitle}</div>
@@ -381,7 +381,7 @@ export default function SensitivePen() {
               onChange={onPoemInput}
               placeholder="begin here, on this empty field of blue…"
               spellCheck="false"
-              style={{ width: "100%", minHeight: "320px", resize: "vertical", background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.2)", borderRadius: "4px", padding: "26px 28px", color: ink, fontFamily: "'Newsreader', Georgia, serif", fontSize: "22px", lineHeight: 1.7, outline: "none" }}
+              style={{ width: "100%", minHeight: "320px", resize: "vertical", background: "rgba(255,255,255,0.06)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "8px", padding: "26px 28px", color: ink, fontFamily: "'Newsreader', Georgia, serif", fontSize: "22px", lineHeight: 1.7, outline: "none", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.06)" }}
             />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px", marginTop: "18px" }}>
               <div style={{ display: "flex", gap: "26px", fontSize: "12px", letterSpacing: ".12em", textTransform: "uppercase", color: "rgba(255,255,255,.6)" }}>
@@ -399,7 +399,7 @@ export default function SensitivePen() {
         {/* ARCHIVE doorway */}
         {saved.length > 0 && (
           <section style={{ marginTop: "64px" }}>
-            <button onClick={() => setExploring(true)} style={{ position: "relative", display: "block", width: "100%", maxWidth: "660px", margin: "0 auto", overflow: "hidden", cursor: "pointer", border: "1px solid rgba(243,236,214,.34)", borderRadius: "4px", padding: "46px 30px", textAlign: "center", background: "radial-gradient(130% 100% at 50% 135%, rgba(255,255,255,.13), transparent 62%)", color: ink }}>
+            <button onClick={() => setExploring(true)} style={{ position: "relative", display: "block", width: "100%", maxWidth: "660px", margin: "0 auto", overflow: "hidden", cursor: "pointer", border: "1px solid rgba(243,236,214,0.3)", borderRadius: "8px", padding: "46px 30px", textAlign: "center", background: "radial-gradient(130% 100% at 50% 135%, rgba(255,255,255,0.13), transparent 62%)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", color: ink, boxShadow: "inset 0 1px 1px rgba(255,255,255,0.1), 0 16px 40px rgba(0,0,0,0.15)" }}>
               <div style={{ fontSize: "20px", letterSpacing: ".4em", color: line, marginBottom: "14px" }}>✦</div>
               <div style={{ fontFamily: "'Newsreader', Georgia, serif", fontWeight: 400, fontSize: "40px", lineHeight: 1 }}>The <span style={{ fontStyle: "italic" }}>Constellation</span></div>
               <div style={{ fontFamily: "'Newsreader', Georgia, serif", fontStyle: "italic", fontSize: "16px", color: "rgba(255,255,255,.7)", marginTop: "12px" }}>{saved.length} poems pinned to the sky</div>
@@ -418,7 +418,7 @@ export default function SensitivePen() {
       {/* READ MODAL */}
       {reading != null && saved[reading] && (
         <div onClick={() => setReading(null)} style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,12,60,.74)", backdropFilter: "blur(3px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "32px" }}>
-          <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", maxWidth: "620px", width: "100%", maxHeight: "84vh", overflowY: "auto", background: bg, border: `1px solid ${line}`, borderRadius: "6px", padding: "46px 48px" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", maxWidth: "620px", width: "100%", maxHeight: "84vh", overflowY: "auto", background: "rgba(42,45,180,0.82)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", border: `1px solid ${line}`, borderRadius: "8px", padding: "46px 48px", boxShadow: "0 24px 60px rgba(0,0,0,0.4)" }}>
             <button onClick={() => setReading(null)} style={{ position: "absolute", top: "16px", right: "18px", background: "transparent", border: "none", color: line, fontSize: "24px", cursor: "pointer", lineHeight: 1 }}>×</button>
             <div style={{ fontSize: "10px", letterSpacing: ".24em", textTransform: "uppercase", color: "rgba(255,255,255,.5)", marginBottom: "14px", display: "flex", gap: "12px", flexWrap: "wrap" }}><span>{saved[reading].cat}</span><span style={{ opacity: .6 }}>{saved[reading].date}</span></div>
             <div style={{ borderLeft: `2px solid ${line}`, paddingLeft: "16px", marginBottom: "24px" }}>

@@ -185,7 +185,7 @@ export default function GardenPlot() {
               <button
                 key={i}
                 onClick={() => plantSeed(bed, s)}
-                style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "22px", background: "rgba(255,253,248,.5)", border: "1px solid rgba(43,37,32,.1)", borderRadius: "6px", padding: "24px 26px", cursor: "pointer", textAlign: "left" }}
+                style={{ position: "relative", display: "flex", alignItems: "flex-start", gap: "22px", background: "rgba(255,253,248,0.4)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: "8px", padding: "24px 26px", cursor: "pointer", textAlign: "left", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.45)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,253,248,.85)"; e.currentTarget.style.transform = "translateX(6px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,253,248,.5)"; e.currentTarget.style.transform = "translateX(0)"; }}
               >
@@ -233,7 +233,7 @@ export default function GardenPlot() {
                           key={idx}
                           onClick={() => !isW && weaveNudge(n, idx)}
                           disabled={isW}
-                          style={{ display: "flex", alignItems: "center", gap: "16px", background: `rgba(255,253,247,${isW ? ".4" : ".66"})`, border: `1px solid rgba(43,37,32,${isW ? ".07" : ".12"})`, borderRadius: "7px", padding: "14px 18px", cursor: isW ? "default" : "pointer", opacity: isW ? 0.62 : 1, textAlign: "left" }}
+                          style={{ display: "flex", alignItems: "center", gap: "16px", background: `rgba(255,253,247,${isW ? ".35" : ".5"})`, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: `1px solid rgba(255,255,255,${isW ? ".3" : ".5"})`, borderRadius: "8px", padding: "14px 18px", cursor: isW ? "default" : "pointer", opacity: isW ? 0.62 : 1, textAlign: "left", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.4)" }}
                         >
                           <span style={{ flex: 1, fontStyle: "italic", fontSize: "17px", lineHeight: 1.4, color: "#5a4a3a" }}>{n.q}</span>
                           <span style={{ flex: "none", fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", letterSpacing: ".16em", textTransform: "uppercase", color: isW ? "#8aa173" : "#b8542f", whiteSpace: "nowrap" }}>
@@ -251,12 +251,12 @@ export default function GardenPlot() {
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 placeholder="Begin where it hurts. Don't plan — just plant the first sentence…"
-                style={{ width: "100%", minHeight: "56vh", marginTop: "30px", background: "rgba(255,253,247,.62)", border: "1px solid rgba(43,37,32,.08)", borderRadius: "6px", padding: "34px 38px", fontFamily: "'Newsreader', Georgia, serif", fontSize: "20px", lineHeight: 1.95, color: "#2b2520", resize: "vertical", outline: "none" }}
+                style={{ width: "100%", minHeight: "56vh", marginTop: "30px", background: "rgba(255,253,247,0.5)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: "10px", padding: "34px 38px", fontFamily: "'Newsreader', Georgia, serif", fontSize: "20px", lineHeight: 1.95, color: "#2b2520", resize: "vertical", outline: "none", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.5)" }}
               />
             </div>
 
             <div style={{ flex: "none", width: "298px", position: "sticky", top: "24px" }}>
-              <div style={{ position: "relative", background: "rgba(255,253,247,.5)", border: "1px solid rgba(43,37,32,.09)", borderRadius: "8px", padding: "24px 24px 28px", textAlign: "center" }}>
+              <div style={{ position: "relative", background: "rgba(255,253,247,0.4)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: "12px", padding: "24px 24px 28px", textAlign: "center", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.5), 0 8px 24px -12px rgba(80,50,90,0.2)" }}>
                 <div style={{ position: "relative", height: "262px", display: "flex", alignItems: "flex-end", justifyContent: "center", overflow: "hidden" }}>
                   <PlantSVG words={words} c1={c1} c2={c2} />
                 </div>
@@ -303,7 +303,7 @@ export default function GardenPlot() {
               <button
                 key={b.id}
                 onClick={() => { setSeed({ n: b.n, text: b.seedText, theme: b.theme, bedId: b.bedId, bedName: b.bedName, c1: b.c1, c2: b.c2 }); setDraft(b.text); setWoven([]); setScreen("write"); }}
-                style={{ background: "rgba(255,253,247,.62)", border: "1px solid rgba(43,37,32,.1)", borderRadius: "8px", padding: "22px 24px 24px", cursor: "pointer", textAlign: "left" }}
+                style={{ background: "rgba(255,253,247,0.5)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", border: "1px solid rgba(255,255,255,0.4)", borderRadius: "10px", padding: "22px 24px 24px", cursor: "pointer", textAlign: "left", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.5)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-5px)"; e.currentTarget.style.background = "rgba(255,253,247,.88)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = "rgba(255,253,247,.62)"; }}
               >

@@ -27,7 +27,8 @@ export default function PromptPacks() {
 
   return (
     <div className="max-w-[1080px] mx-auto" style={{ padding: "60px 52px 80px" }}>
-      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2.5px", color: "#a08b5e" }}>THE GARDEN</div>
+      <Link to="/" className="no-underline transition-colors hover:text-[#23402b]" style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2px", color: "#8a836f", textTransform: "uppercase", display: "inline-block", marginBottom: "18px" }}>← Back to garden</Link>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "2.5px", color: "#a08b5e" }}>THE GARDEN</div>
       <h1 className="font-display font-normal mt-[10px]" style={{ fontSize: "52px", letterSpacing: "-.4px", color: "#23211a", lineHeight: 1.05 }}>
         Prompt Packs
       </h1>
@@ -50,6 +51,7 @@ export default function PromptPacks() {
                 minHeight: "340px",
                 padding: "44px 38px",
                 color: p.fg,
+                boxShadow: "inset 0 1px 1px rgba(255,255,255,0.35), 0 24px 48px -24px rgba(40,30,60,0.35)",
               }}
             >
               <div style={{ fontSize: "28px", marginBottom: "16px", opacity: 0.8 }}>{p.glyph}</div>
@@ -59,9 +61,11 @@ export default function PromptPacks() {
               <div className="font-display" style={{ fontSize: "34px", fontWeight: 300, lineHeight: 1.05, letterSpacing: "-.015em", marginBottom: "18px" }}>
                 {p.title}
               </div>
-              <p className="font-display" style={{ fontSize: "16px", lineHeight: 1.55, opacity: 0.72, flex: 1 }}>
-                {p.desc}
-              </p>
+              <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderRadius: "12px", padding: "18px 20px", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.25)" }}>
+                <p className="font-display" style={{ fontSize: "16px", lineHeight: 1.55, opacity: 0.85, margin: 0 }}>
+                  {p.desc}
+                </p>
+              </div>
               <div
                 className="inline-flex items-center gap-2 mt-6"
                 style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "1.5px", textTransform: "uppercase", color: p.accent === "#e9ecff" ? p.fg : p.accent }}
