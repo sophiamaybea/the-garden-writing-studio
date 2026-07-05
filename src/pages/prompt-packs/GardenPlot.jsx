@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GARDEN_BEDS, GARDEN_NUDGES } from "@/data/promptPacks";
+import TiltCard from "@/components/garden/TiltCard";
 
 const STORAGE_KEY = "garden_plot_blooms";
 
@@ -137,24 +138,23 @@ export default function GardenPlot() {
             <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: ".28em", textTransform: "uppercase", color: "#a8957f", margin: "24px 0 0" }}>or wander the beds ↓</p>
           </div>
 
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "center", gap: "30px 34px", marginTop: "62px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "center", gap: "30px 34px", marginTop: "62px", perspective: "1000px" }}>
             {GARDEN_BEDS.map((b, i) => {
               const sizes = [176, 150, 198, 162, 184, 148, 172, 158];
               const d = sizes[i % sizes.length];
               const r = i % 3 === 0 ? "46% 54% 42% 58% / 56% 44% 56% 44%" : i % 3 === 1 ? "54% 46% 60% 40% / 44% 58% 42% 56%" : "50%";
               return (
-                <button
-                  key={b.id}
-                  onClick={() => go("bed", { bedId: b.id })}
-                  style={{ position: "relative", width: `${d}px`, height: `${d}px`, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "transform .5s cubic-bezier(.2,.8,.2,1)", borderRadius: r, background: `radial-gradient(120% 120% at 32% 26%, ${b.c1} 0%, ${b.c2} 78%)`, boxShadow: "0 18px 40px -18px rgba(80,50,90,.4), inset 0 2px 14px rgba(255,255,255,.45)", border: "none", padding: 0 }}
-                  onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-8px) scale(1.04)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0) scale(1)"; }}
-                >
-                  <div style={{ position: "relative", zIndex: 2, padding: "0 16px", textAlign: "center" }}>
-                    <div style={{ fontStyle: "italic", fontWeight: 400, fontSize: "24px", lineHeight: 1.12, color: "#2b2520" }}>{b.name}</div>
-                    <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", letterSpacing: ".2em", textTransform: "uppercase", color: "rgba(43,37,32,.6)", marginTop: "9px" }}>{b.seeds.length} seeds</div>
-                  </div>
-                </button>
+                <TiltCard key={b.id} max={14} scale={1.06} style={{ width: `${d}px`, height: `${d}px`, borderRadius: r, background: `radial-gradient(120% 120% at 32% 26%, ${b.c1} 0%, ${b.c2} 78%)`, boxShadow: "0 22px 48px -18px rgba(80,50,90,.45), inset 0 2px 14px rgba(255,255,255,.45)", cursor: "pointer", border: "none", padding: 0, transformStyle: "preserve-3d" }}>
+                  <button
+                    onClick={() => go("bed", { bedId: b.id })}
+                    style={{ position: "relative", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", cursor: "pointer", padding: 0, transformStyle: "preserve-3d" }}
+                  >
+                    <div style={{ position: "relative", zIndex: 2, padding: "0 16px", textAlign: "center", transform: "translateZ(40px)" }}>
+                      <div style={{ fontStyle: "italic", fontWeight: 400, fontSize: "24px", lineHeight: 1.12, color: "#2b2520" }}>{b.name}</div>
+                      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "9px", letterSpacing: ".2em", textTransform: "uppercase", color: "rgba(43,37,32,.6)", marginTop: "9px" }}>{b.seeds.length} seeds</div>
+                    </div>
+                  </button>
+                </TiltCard>
               );
             })}
           </div>

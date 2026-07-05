@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import TiltCard from "@/components/garden/TiltCard";
 
 export default function PromptPacks() {
   const packs = [
@@ -36,44 +37,45 @@ export default function PromptPacks() {
         Two ways in. Each one a complete writing ritual — choose your atmosphere.
       </p>
 
-      <div className="grid gap-7" style={{ gridTemplateColumns: "1fr 1fr" }}>
+      <div className="grid gap-7" style={{ gridTemplateColumns: "1fr 1fr", perspective: "1200px" }}>
         {packs.map((p) => (
-          <Link
-            key={p.to}
-            to={p.to}
-            className="no-underline block rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1"
-            style={{ border: "1px solid rgba(40,40,31,.12)" }}
-          >
-            <div
-              className="flex flex-col"
-              style={{
-                background: p.bg,
-                minHeight: "340px",
-                padding: "44px 38px",
-                color: p.fg,
-                boxShadow: "inset 0 1px 1px rgba(255,255,255,0.35), 0 24px 48px -24px rgba(40,30,60,0.35)",
-              }}
+          <TiltCard key={p.to} max={8} scale={1.02} style={{ borderRadius: "16px", border: "1px solid rgba(40,40,31,.12)" }}>
+            <Link
+              to={p.to}
+              className="no-underline block rounded-2xl overflow-hidden"
+              style={{ transformStyle: "preserve-3d" }}
             >
-              <div style={{ fontSize: "28px", marginBottom: "16px", opacity: 0.8 }}>{p.glyph}</div>
-              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase", opacity: 0.6, marginBottom: "10px" }}>
-                {p.subtitle}
-              </div>
-              <div className="font-display" style={{ fontSize: "34px", fontWeight: 300, lineHeight: 1.05, letterSpacing: "-.015em", marginBottom: "18px" }}>
-                {p.title}
-              </div>
-              <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderRadius: "12px", padding: "18px 20px", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.25)" }}>
-                <p className="font-display" style={{ fontSize: "16px", lineHeight: 1.55, opacity: 0.85, margin: 0 }}>
-                  {p.desc}
-                </p>
-              </div>
               <div
-                className="inline-flex items-center gap-2 mt-6"
-                style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "1.5px", textTransform: "uppercase", color: p.accent === "#e9ecff" ? p.fg : p.accent }}
+                className="flex flex-col"
+                style={{
+                  background: p.bg,
+                  minHeight: "340px",
+                  padding: "44px 38px",
+                  color: p.fg,
+                  boxShadow: "inset 0 1px 1px rgba(255,255,255,0.35), 0 24px 48px -24px rgba(40,30,60,0.35)",
+                }}
               >
-                Enter →
+                <div style={{ fontSize: "28px", marginBottom: "16px", opacity: 0.8, transform: "translateZ(40px)" }}>{p.glyph}</div>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase", opacity: 0.6, marginBottom: "10px", transform: "translateZ(30px)" }}>
+                  {p.subtitle}
+                </div>
+                <div className="font-display" style={{ fontSize: "34px", fontWeight: 300, lineHeight: 1.05, letterSpacing: "-.015em", marginBottom: "18px", transform: "translateZ(50px)" }}>
+                  {p.title}
+                </div>
+                <div style={{ flex: 1, background: "rgba(255,255,255,0.15)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", borderRadius: "12px", padding: "18px 20px", boxShadow: "inset 0 1px 1px rgba(255,255,255,0.25)", transform: "translateZ(20px)" }}>
+                  <p className="font-display" style={{ fontSize: "16px", lineHeight: 1.55, opacity: 0.85, margin: 0 }}>
+                    {p.desc}
+                  </p>
+                </div>
+                <div
+                  className="inline-flex items-center gap-2 mt-6"
+                  style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "1.5px", textTransform: "uppercase", color: p.accent === "#e9ecff" ? p.fg : p.accent, transform: "translateZ(35px)" }}
+                >
+                  Enter →
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+          </TiltCard>
         ))}
       </div>
     </div>

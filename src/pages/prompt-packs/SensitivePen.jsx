@@ -294,7 +294,7 @@ export default function SensitivePen() {
         </header>
 
         {/* STAGE */}
-        <section style={{ marginTop: "30px", display: "flex", flexWrap: "wrap", gap: "38px", alignItems: "center", justifyContent: "center" }}>
+<section style={{ marginTop: "30px", display: "flex", flexWrap: "wrap", gap: "38px", alignItems: "center", justifyContent: "center", perspective: "1200px" }}>
           <div style={{ position: "relative", width: "min(440px,82vw)", aspectRatio: "1", flex: "0 0 auto" }}>
             <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
             {phase === "idle" && (
