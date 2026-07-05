@@ -1,0 +1,45 @@
+{
+  "name": "Earning",
+  "type": "object",
+  "properties": {
+    "writer_id": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "publication",
+        "workshop",
+        "prompt_pack",
+        "mentoring",
+        "prize"
+      ],
+      "default": "publication"
+    },
+    "description": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number",
+      "default": 0
+    },
+    "currency": {
+      "type": "string",
+      "default": "GBP"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "available",
+        "paid"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "writer_id",
+    "amount"
+  ]
+}

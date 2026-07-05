@@ -7,6 +7,10 @@ import StageMark from "@/components/garden/StageMark";
 import { PanelRight, PanelRightClose, Maximize2, Minimize2, Bookmark, BookmarkCheck, ArrowLeft } from "lucide-react";
 import AnnotationPanel from "@/components/garden/AnnotationPanel";
 import CarryModal from "@/components/garden/CarryModal";
+import VersionsPanel from "@/components/garden/VersionsPanel";
+import SelfNotesPanel from "@/components/garden/SelfNotesPanel";
+import TagsRow from "@/components/garden/TagsRow";
+import SubmitToGalleryModal from "@/components/garden/SubmitToGalleryModal";
 
 const STAGES = ["seedling", "growing", "bloom", "resting"];
 const STAGE_COLORS = {
@@ -41,6 +45,11 @@ export default function WriteEditor() {
   const [showPanel, setShowPanel]   = useState(false);
   const [showStageMenu, setShowStageMenu]     = useState(false);
   const [showExposureMenu, setShowExposureMenu] = useState(false);
+  const [tags, setTags]         = useState([]);
+  const [versions, setVersions] = useState([]);
+  const [selfNotes, setSelfNotes] = useState([]);
+  const [panelTab, setPanelTab] = useState("margins"); // margins | branches | notes
+  const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [carrySelection, setCarrySelection] = useState(null); // { text, x, y }
   const [showCarryModal, setShowCarryModal] = useState(false);
   const [carryLine, setCarryLine] = useState("");
@@ -90,6 +99,9 @@ export default function WriteEditor() {
       setStage(p.stage || "seedling");
       setExcerpt(p.excerpt || "");
       setExposure(p.exposure || "private");
+      setTags(p.tags || []);
+      setVersions(p.versions || []);
+      setSelfNotes(p.self_notes || []);
       setLoaded(true);
     }
   }, [piece, loaded]);
@@ -129,6 +141,9 @@ export default function WriteEditor() {
       excerpt: excerpt || content.slice(0, 100),
       word_count: wordCount,
       last_tended: new Date().toISOString(),
+      tags,
+      versions,
+      self_notes: selfNotes,
     };
     if (isNew) {
       await base44.entities.WritingPiece.create(data);
@@ -138,7 +153,27 @@ export default function WriteEditor() {
     qc.invalidateQueries({ queryKey: ["pieces"] });
     setSaving(false);
     if (isNew) navigate("/projects");
-  }, [title, content, form, stage, exposure, excerpt, wordCount, isNew, id, navigate, qc]);
+  }, [title, content, form, stage, exposure, excerpt, wordCount, tags, versions, selfNotes, isNew, id, navigate, qc]);
+
+  const saveBranch = async (name) => {
+    const next = [...versions, { name, content, created: new Date().toISOString() }];
+    setVersions(next);
+    if (!isNew) await base44.entities.WritingPiece.update(id, { versions: next });
+  };
+
+  const openBranch = (v) => setContent(v.content || "");
+
+  const addSelfNote = async (text) => {
+    const next = [...selfNotes, { text, created: new Date().toISOString() }];
+    setSelfNotes(next);
+    if (!isNew) await base44.entities.WritingPiece.update(id, { self_notes: next });
+  };
+
+  const deleteSelfNote = async (idx) => {
+    const next = selfNotes.filter((_, i) => i !== idx);
+    setSelfNotes(next);
+    if (!isNew) await base44.entities.WritingPiece.update(id, { self_notes: next });
+  };
 
   const isOwner = !isNew && piece?.[0]?.created_by_id === currentUser?.id;
   const stageMeta  = STAGE_COLORS[stage] || STAGE_COLORS.seedling;
@@ -228,6 +263,16 @@ export default function WriteEditor() {
 
         {/* Right: actions */}
         <div className="flex items-center gap-2">
+          {!isNew && isOwner && stage === "bloom" && (
+            <button
+              onClick={() => setShowGalleryModal(true)}
+              className="cursor-pointer rounded-lg bg-transparent hover:bg-white/50 transition-colors"
+              style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "1px", textTransform: "uppercase", color: "#a0563b", padding: "8px 12px", border: "1px solid rgba(160,86,59,.35)" }}
+              title="Offer this piece to the Page Gallery"
+            >
+              ❋ Offer to Gallery
+            </button>
+          )}
           {!isNew && !isOwner && currentUser && (
             <button
               onClick={() => toggleSitWith.mutate()}
@@ -334,6 +379,10 @@ export default function WriteEditor() {
               className="w-full bg-transparent border-none outline-none font-display italic mb-12"
               style={{ fontSize: "18px", color: "#9a8f7a", lineHeight: 1.6 }}
             />
+            {/* Tags */}
+            <div className="mb-6">
+              <TagsRow tags={tags} onChange={setTags} editable={isNew || isOwner} />
+            </div>
             {/* Divider */}
             <div style={{ height: "1px", background: "rgba(40,40,31,.08)", marginBottom: "52px" }} />
             {/* Body */}
@@ -354,15 +403,52 @@ export default function WriteEditor() {
             className="flex-none overflow-y-auto"
             style={{ width: "320px", borderLeft: "1px solid rgba(40,40,31,.12)", background: "#ede6d4", padding: "28px 20px" }}
           >
-            <AnnotationPanel
-              pieceId={id}
-              content={content}
-              currentUser={currentUser}
-              isOwner={isOwner}
-            />
+            {isOwner && (
+              <div className="flex gap-1 mb-6">
+                {[["margins", "Margins"], ["branches", "Branches"], ["notes", "To self"]].map(([key, label]) => (
+                  <button
+                    key={key}
+                    onClick={() => setPanelTab(key)}
+                    className="flex-1 border-none cursor-pointer rounded-lg transition-colors"
+                    style={{
+                      fontFamily: "'IBM Plex Mono', monospace", fontSize: "9.5px", letterSpacing: "1px", textTransform: "uppercase",
+                      padding: "8px 4px",
+                      background: panelTab === key ? "rgba(35,64,43,.12)" : "transparent",
+                      color: panelTab === key ? "#23402b" : "#9a917d",
+                      fontWeight: panelTab === key ? 600 : 400,
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+            {(!isOwner || panelTab === "margins") && (
+              <AnnotationPanel
+                pieceId={id}
+                content={content}
+                currentUser={currentUser}
+                isOwner={isOwner}
+              />
+            )}
+            {isOwner && panelTab === "branches" && (
+              <VersionsPanel versions={versions} onSaveBranch={saveBranch} onOpenBranch={openBranch} />
+            )}
+            {isOwner && panelTab === "notes" && (
+              <SelfNotesPanel notes={selfNotes} onAdd={addSelfNote} onDelete={deleteSelfNote} />
+            )}
           </div>
         )}
       </div>
+
+      {showGalleryModal && !isNew && currentUser && (
+        <SubmitToGalleryModal
+          pieceId={id}
+          pieceTitle={title}
+          currentUser={currentUser}
+          onClose={() => setShowGalleryModal(false)}
+        />
+      )}
 
       {showCarryModal && !isNew && (
         <CarryModal

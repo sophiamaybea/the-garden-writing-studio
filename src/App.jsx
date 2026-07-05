@@ -21,6 +21,8 @@ import StudioWall from '@/pages/StudioWall';
 import Feed from '@/pages/Feed';
 import Rooms from '@/pages/Rooms';
 import Archive from '@/pages/Archive';
+import Gallery from '@/pages/Gallery';
+import Earnings from '@/pages/Earnings';
 import Writers from '@/pages/Writers';
 import Boards from '@/pages/Boards';
 import BoardView from '@/pages/BoardView';
@@ -93,6 +95,8 @@ const AuthenticatedApp = () => {
           <Route path="/rooms" element={<Rooms />} />
           <Route path="/rooms/:id" element={<RoomDetail />} />
           <Route path="/archive" element={<Archive />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/earnings" element={<Earnings />} />
           <Route path="/writers" element={<Writers />} />
           <Route path="/boards" element={<Boards />} />
           <Route path="/boards/:id" element={<BoardView />} />

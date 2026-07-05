@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Link, useNavigate } from "react-router-dom";
 import OrbitalHero from "@/components/garden/OrbitalHero";
 import ActiveProjectRow from "@/components/garden/ActiveProjectRow";
+import PathwayPanel from "@/components/garden/PathwayPanel";
 import { getDayLabel, formatTended, STAGE_META } from "@/lib/gardenUtils";
 import moment from "moment";
 
@@ -102,6 +103,9 @@ export default function Dashboard() {
             </Link>
           </div>
         </div>
+
+        {/* Writer pathway */}
+        <PathwayPanel pieces={pieces} currentUser={currentUser} />
 
         {/* Prompt of the day */}
         <div className="relative mt-[30px] rounded-[18px] overflow-hidden" style={{ padding: "34px 38px", background: "#e7ddc6", border: "1px solid rgba(40,40,31,.12)" }}>

@@ -56,6 +56,43 @@
     "archived_date": {
       "type": "string",
       "format": "date-time"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "self_notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "required": [
