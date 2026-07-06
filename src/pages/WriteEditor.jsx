@@ -163,6 +163,17 @@ export default function WriteEditor() {
 
   const openBranch = (v) => setContent(v.content || "");
 
+  const exportPiece = () => {
+    const text = `${title || "Untitled"}\n\n${content}`;
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(title || "untitled").replace(/[\\/:*?"<>|]/g, "").trim() || "untitled"}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const addSelfNote = async (text) => {
     const next = [...selfNotes, { text, created: new Date().toISOString() }];
     setSelfNotes(next);
@@ -263,6 +274,14 @@ export default function WriteEditor() {
 
         {/* Right: actions */}
         <div className="flex items-center gap-2">
+          <button
+            onClick={exportPiece}
+            className="cursor-pointer rounded-lg bg-transparent hover:bg-white/50 transition-colors"
+            style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: "10px", letterSpacing: "1px", textTransform: "uppercase", color: "#8a836f", padding: "8px 12px", border: "1px solid rgba(40,40,31,.2)" }}
+            title="Download this piece as a text document"
+          >
+            ↓ Export
+          </button>
           {!isNew && isOwner && stage === "bloom" && (
             <button
               onClick={() => setShowGalleryModal(true)}
