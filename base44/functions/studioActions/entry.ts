@@ -1,5 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.31';
 
+// The Owner account. Update this one line to hand ownership to a different email.
+const OWNER_EMAIL = 'sophiamaybea@gmail.com';
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -7,11 +10,11 @@ Deno.serve(async (req) => {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const svc = base44.asServiceRole;
-    const isEIC = user.role === 'admin';
+    const isOwner = user.email?.toLowerCase() === OWNER_EMAIL || user.role === 'admin';
     const members = await svc.entities.EditorialMember.filter({ email: user.email });
     const member = members.find((m) => m.status !== 'revoked') || null;
-    const editorialRole = isEIC ? 'editor_in_chief' : (member ? member.editorial_role : null);
-    const allowed = isEIC || !!member;
+    const editorialRole = isOwner ? 'owner' : (member ? member.editorial_role : null);
+    const allowed = isOwner || !!member;
 
     const body = await req.json();
     const action = body.action;
@@ -26,7 +29,7 @@ Deno.serve(async (req) => {
     if (!allowed) return Response.json({ error: 'The Studio is private by design.' }, { status: 403 });
 
     if (action === 'invite') {
-      if (!isEIC) return Response.json({ error: 'Only the Editor-in-Chief can invite editors.' }, { status: 403 });
+      if (!isOwner) return Response.json({ error: 'Only the Owner can invite editors.' }, { status: 403 });
       const email = (body.email || '').trim().toLowerCase();
       if (!email) return Response.json({ error: 'An email is required.' }, { status: 400 });
       const existing = await svc.entities.EditorialMember.filter({ email });
@@ -50,12 +53,15 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'revoke') {
-      if (!isEIC) return Response.json({ error: 'Only the Editor-in-Chief can revoke access.' }, { status: 403 });
+      if (!isOwner) return Response.json({ error: 'Only the Owner can revoke access.' }, { status: 403 });
       await svc.entities.EditorialMember.update(body.member_id, { status: 'revoked' });
       return Response.json({ ok: true });
     }
 
     if (action === 'decide') {
+      if (editorialRole === 'first_reader') {
+        return Response.json({ error: 'First Readers can read the queue but not make decisions.' }, { status: 403 });
+      }
       const sub = await svc.entities.GallerySubmission.get(body.submission_id);
       if (!sub) return Response.json({ error: 'Submission not found.' }, { status: 404 });
       const update = { status: body.status };
@@ -76,8 +82,8 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'approve_payment') {
-      if (!isEIC && editorialRole !== 'senior_editor') {
-        return Response.json({ error: 'Payments require a senior editor.' }, { status: 403 });
+      if (!isOwner && editorialRole !== 'senior_editor') {
+        return Response.json({ error: 'Payments require a Senior Editor or the Owner.' }, { status: 403 });
       }
       await svc.entities.Earning.update(body.earning_id, { status: 'available' });
       return Response.json({ ok: true });

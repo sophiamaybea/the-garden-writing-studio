@@ -11,9 +11,9 @@
     "editorial_role": {
       "type": "string",
       "enum": [
+        "first_reader",
         "editor",
-        "senior_editor",
-        "editor_in_chief"
+        "senior_editor"
       ],
       "default": "editor"
     },

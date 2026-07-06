@@ -6,7 +6,7 @@ import moment from "moment";
 
 const mono = { fontFamily: "'IBM Plex Mono', monospace" };
 
-const ROLE_LABELS = { editor: "Editor", senior_editor: "Senior Editor", editor_in_chief: "Editor-in-Chief" };
+const ROLE_LABELS = { first_reader: "First Reader", editor: "Editor", senior_editor: "Senior Editor" };
 
 export default function People() {
   const qc = useQueryClient();
@@ -19,6 +19,11 @@ export default function People() {
   const { data: members = [] } = useQuery({
     queryKey: ["studioMembers"],
     queryFn: () => base44.entities.EditorialMember.list("-created_date"),
+  });
+
+  const { data: me } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: () => base44.auth.me(),
   });
 
   const invite = useMutation({
@@ -60,9 +65,9 @@ export default function People() {
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" className="flex-1 min-w-[160px]" style={inputStyle} />
           <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" className="flex-1 min-w-[200px]" style={inputStyle} />
           <select value={role} onChange={(e) => setRole(e.target.value)} style={{ ...inputStyle, background: "#1b1b13", cursor: "pointer" }}>
-            <option value="editor">Editor</option>
-            <option value="senior_editor">Senior Editor</option>
-            <option value="editor_in_chief">Editor-in-Chief</option>
+            <option value="first_reader">First Reader — queue only</option>
+            <option value="editor">Editor — full editorial tools</option>
+            <option value="senior_editor">Senior Editor — everything except People</option>
           </select>
           <button
             onClick={() => { setSent(""); setError(""); invite.mutate(); }}
@@ -81,8 +86,20 @@ export default function People() {
       </div>
 
       <div className="pb-3" style={{ ...mono, fontSize: "10px", letterSpacing: "2.5px", color: "#8a7d5e", textTransform: "uppercase", borderBottom: "1px solid rgba(200,185,138,.15)" }}>
-        Editorial team · {active.length}
+        Editorial team · {active.length + 1}
       </div>
+      {me && (
+        <div className="flex items-center gap-4 py-4 px-2" style={{ borderBottom: "1px solid rgba(200,185,138,.1)" }}>
+          <div className="w-9 h-9 flex-none rounded-full flex items-center justify-center font-display" style={{ background: "#c8b98a", color: "#1b1b13" }}>
+            {(me.full_name || me.email).charAt(0).toUpperCase()}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-display" style={{ fontSize: "16px", color: "#e8e0c8" }}>{me.full_name || me.email}</div>
+            <div style={{ ...mono, fontSize: "9.5px", letterSpacing: "1px", color: "#8a7d5e", textTransform: "uppercase", marginTop: "3px" }}>{me.email}</div>
+          </div>
+          <span style={{ ...mono, fontSize: "9.5px", letterSpacing: "1.5px", textTransform: "uppercase", color: "#c8b98a" }}>Owner</span>
+        </div>
+      )}
       {active.map((m) => (
         <div key={m.id} className="flex items-center gap-4 py-4 px-2" style={{ borderBottom: "1px solid rgba(200,185,138,.1)" }}>
           <div className="w-9 h-9 flex-none rounded-full flex items-center justify-center font-display" style={{ background: "rgba(200,185,138,.15)", color: "#c8b98a" }}>

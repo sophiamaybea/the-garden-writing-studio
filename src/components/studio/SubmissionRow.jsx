@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { studioActions } from "@/functions/studioActions";
@@ -16,6 +17,8 @@ const STATUS_META = {
 
 export default function SubmissionRow({ submission }) {
   const qc = useQueryClient();
+  const { role } = useOutletContext() || {};
+  const canDecide = role !== "first_reader";
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState(submission.editor_note || "");
   const [fee, setFee] = useState("");
@@ -72,6 +75,13 @@ export default function SubmissionRow({ submission }) {
             {piece ? (piece.content || "No content.") : "Opening the piece…"}
           </div>
 
+          {!canDecide && (
+            <div className="font-display italic mt-5" style={{ fontSize: "13px", color: "#8a836f" }}>
+              You're reading as a First Reader — decisions are made by editors.
+            </div>
+          )}
+
+          {canDecide && (<>
           <div className="mt-5">
             <div style={{ ...mono, fontSize: "9px", letterSpacing: "2px", color: "#8a7d5e", textTransform: "uppercase", marginBottom: "8px" }}>Editor's note to the writer</div>
             <textarea
@@ -100,6 +110,7 @@ export default function SubmissionRow({ submission }) {
             {btn("Publish", "published", true)}
             {btn("Return with note", "returned")}
           </div>
+          </>)}
         </div>
       )}
     </div>

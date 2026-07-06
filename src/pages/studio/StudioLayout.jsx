@@ -6,9 +6,10 @@ import { studioActions } from "@/functions/studioActions";
 const mono = { fontFamily: "'IBM Plex Mono', monospace" };
 
 const ROLE_LABELS = {
+  first_reader: "First Reader",
   editor: "Editor",
   senior_editor: "Senior Editor",
-  editor_in_chief: "Editor-in-Chief",
+  owner: "Editor-in-Chief",
 };
 
 export default function StudioLayout() {
@@ -47,13 +48,13 @@ export default function StudioLayout() {
     );
   }
 
-  const isEIC = access.role === "editor_in_chief";
-  const seniorOrAbove = isEIC || access.role === "senior_editor";
+  const isOwner = access.role === "owner";
+  const seniorOrAbove = isOwner || access.role === "senior_editor";
 
   const nav = [
     { label: "READING QUEUE", path: "/studio" },
     ...(seniorOrAbove ? [{ label: "PAYMENTS APPROVAL", path: "/studio/payments" }] : []),
-    ...(isEIC ? [{ label: "PEOPLE & INVITES", path: "/studio/people" }] : []),
+    ...(isOwner ? [{ label: "PEOPLE & INVITES", path: "/studio/people" }] : []),
   ];
 
   return (
@@ -92,7 +93,7 @@ export default function StudioLayout() {
       </aside>
 
       <main className="flex-1 overflow-y-auto">
-        <Outlet context={{ role: access.role, isEIC, seniorOrAbove }} />
+        <Outlet context={{ role: access.role, isOwner, seniorOrAbove }} />
       </main>
     </div>
   );
