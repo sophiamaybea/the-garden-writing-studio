@@ -34,6 +34,10 @@ import Profile from '@/pages/Profile';
 import Onboarding from '@/pages/Onboarding';
 import PromptPacks from '@/pages/PromptPacks';
 import GardenPlot from '@/pages/prompt-packs/GardenPlot';
+import StudioLayout from '@/pages/studio/StudioLayout';
+import ReadingQueue from '@/pages/studio/ReadingQueue';
+import PaymentsApproval from '@/pages/studio/PaymentsApproval';
+import People from '@/pages/studio/People';
 import SensitivePen from '@/pages/prompt-packs/SensitivePen';
 
 const OnboardingGuard = ({ children }) => {
@@ -86,6 +90,11 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/studio" element={<StudioLayout />}>
+          <Route index element={<ReadingQueue />} />
+          <Route path="payments" element={<PaymentsApproval />} />
+          <Route path="people" element={<People />} />
+        </Route>
         <Route element={<OnboardingGuard><Layout /></OnboardingGuard>}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/projects" element={<Projects />} />

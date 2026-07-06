@@ -1,0 +1,36 @@
+{
+  "name": "EditorialMember",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "editorial_role": {
+      "type": "string",
+      "enum": [
+        "editor",
+        "senior_editor",
+        "editor_in_chief"
+      ],
+      "default": "editor"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "invited",
+        "active",
+        "revoked"
+      ],
+      "default": "invited"
+    },
+    "invited_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "email"
+  ]
+}
